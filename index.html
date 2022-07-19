@@ -6,7 +6,7 @@
     <title>ReCap</title>
 
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="./style.css">
+    <!-- <link rel="stylesheet" href="./style.css"> -->
 
   </head>
   <body>
@@ -50,6 +50,7 @@
 <h4>Light and proximity</h4>
 <ul>
   <li>DeviceLight <span id="DeviceLight"></span></li>
+  <iframe src="envsensors/ambientlight.html" allow="ambient-light-sensor *"></iframe>
   <li>LightLevel <span id="LightLevel"></span></li>
   <li>DeviceProximity <span id="DeviceProximity"></span></li>
   <li>UserProximity <span id="UserProximity"></span></li>
@@ -124,13 +125,10 @@ demo_button.onclick = function(e) {
   }
 };
 
-
 // Light and proximity.
 window.addEventListener('devicelight', function(e) {
    document.getElementById("DeviceLight").innerHTML="AmbientLight current Value: "+e.value+" Max: "+e.max+" Min: "+e.min;
 });
-if('AmbientLightSensor' in window){
-   document.getElementById("DeviceLight").innerHTML="Present";
 
 window.addEventListener('lightlevel', function(e) {
    document.getElementById("Lightlevel").innerHTML="Light level: "+e.value;

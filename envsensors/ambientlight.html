@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+
+    <title>ReCap</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- <link rel="stylesheet" href="./style.css"> -->
+
+  </head>
+  <body data-new-gr-c-s-check-loaded="8.900.0" data-gr-ext-installed="">
+
+    <script>
+      let sns;
+
+      function onReading(e) {
+              document.body.innerHTML = `lux: ${sns.illuminance}`;
+              sns.removeEventListener('reading', onReading);
+            }
+
+      if (window.AmbientLightSensor) {
+              sns = new AmbientLightSensor();
+              //sns.addEventListener('reading', onReading);
+              sns.start();
+              document.body.innerHTML = `lux: ${sns.illuminance}`;
+            } else {
+                    document.body.innerHTML = `Browser does not have ambient light api`;
+                  }
+    </script>
+  </body>
+</html>
