@@ -13,18 +13,17 @@
 
     <script>
       let sns;
-
       function onReading(e) {
               document.body.innerHTML = `lux: ${sns.illuminance}`;
               sns.removeEventListener('reading', onReading);
             }
 
-      if (window.AmbientLightSensor) {
+      try
+      {
               sns = new AmbientLightSensor();
-              //sns.addEventListener('reading', onReading);
+              sns.addEventListener('reading', onReading);
               sns.start();
-              document.body.innerHTML = `lux: ${sns.illuminance}`;
-            } else {
+            } catch(error) {
                     document.body.innerHTML = `Browser does not have ambient light api`;
                   }
     </script>

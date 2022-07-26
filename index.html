@@ -5,142 +5,150 @@
 
     <title>ReCap</title>
 
+    <meta name="description" content="Captcha">
+    <meta name="author" content="Prototype for ReCaptcha">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- <link rel="stylesheet" href="./style.css"> -->
+    <link rel="stylesheet" href="./style.css">
 
   </head>
   <body>
 
-    <main>
+    <center>
+      <header>
 
-<center>
-  <h1 class="title">Captcha</h1>
-</center>
-<a id="start_demo" class="btn btn-lg btn-success py-1" href="#" role="button">Start the demo</a>
-<div>
-<h4 style="margin-top:0.75rem;">Orientation</h4>
-<ul>
-  <li>X-axis (&beta;): <span id="Orientation_b">0</span><span>&deg;</span></li>
-  <li>Y-axis (&gamma;): <span id="Orientation_g">0</span><span>&deg;</span></li>
-  <li>Z-axis (&alpha;): <span id="Orientation_a">0</span><span>&deg;</span></li>
-</ul>
+	<nav>
+	  <span>[<a href="/about">Single</a>]</span>
+	  <span>[<a href="/verbose.html">Verbose</a>]</span>
+	</nav>
 
-<h4>Accelerometer</h4>
-<ul>
-  <li>X-axis: <span id="Accelerometer_x">0</span><span> m/s<sup>2</sup></span></li>
-  <li>Y-axis: <span id="Accelerometer_y">0</span><span> m/s<sup>2</sup></span></li>
-  <li>Z-axis: <span id="Accelerometer_z">0</span><span> m/s<sup>2</sup></span></li>
-  <li>Data Interval: <span id="Accelerometer_i">0</span><span> ms</span></li>
-</ul>
+      </header>
+      <main>
 
-<h4>Accelerometer including gravity</h4>
+	<h1 class="title">Captcha</h1>
+	<table>
+	  <thead>
+	    <tr>
+	      <th>Sensor</th>
+	      <th>Support</th>
+	      <th>Captcha</th>
+	    </tr>
+	  </thead>
+	  <tbody>
+	    <tr id="acc">
+	      <td data-column="Sensor">Accelerometer</td>
+	      <td data-column="Support">❌</td>
+	      <td data-column="Captcha">Give a slight jerk to ur device</td>
+	    </tr>
+	    <tr id="gyro">
+	      <td data-column="Sensor">Gyroscope</td>
+	      <td data-column="Support">❌</td>
+	      <td data-column="Captcha">Flip your phone on the table</td>
+	    </tr>
+	    <tr id="mag">
+	      <td data-column="Sensor">Magnetometer</td>
+	      <td data-column="Support">❌</td>
+	      <td data-column="Captcha">Rotate the device horizontally about 90 degrees</td>
+	    </tr>
+	    <tr id="als">
+	      <td data-column="Sensor">Ambient Light Sensor</td>
+	      <td data-column="Support">❌</td>
+	      <td data-column="Captcha">Cover the sensor for two seconds.</td>
+	    </tr>
+	  </tbody>
+	</table>
+    </center>
+    <<script>
+      if("Accelerometer" in window)
+      {
+	      document.getElementById("acc").children[1].innerHTML="✅";
+	      const acc = new Accelerometer();
+	      acc.start();
+	      oax = acc.x;
+	      oay = acc.y;
+	      oaz = acc.z;
+	      function foo() {
+		      // console.log(oax);
+		      if(acc.x-oax>3)
+		      {
+			      document.getElementById("acc").children[2].innerHTML="✅";
+			      acc.stop();
+			      return;
+		      }
+		      oax = acc.x;
+		      setTimeout(foo, 20);
+	      }
+	      foo();
+      }
+      if("Gyroscope" in window)
+      {
+	      document.getElementById("gyro").children[1].innerHTML="✅";
+	      const gyro = new Gyroscope();
+	      gyro.start();
+	      ogx = acc.x;
+	      ogy = acc.y;
+	      ogz = acc.z;
+	      function foo() {
+		      if( Math.abs(gyro.y-ogy)>3)
+		      {
+			      document.getElementById("gyro").children[2].innerHTML="✅";
+			      gyro.stop();
+			      return;
+		      }
+		      ogy = gyro.y;
+		      setTimeout(foo, 50);
+	      }
+	      foo();
+      }
+      if("AmbientLightSensor" in window)
+      {
+	      document.getElementById("als").children[1].innerHTML="✅";
+	      const als = new AmbientLightSensor();
+	      als.start();
+	      alsl = als.illuminance;
+	      function foo() {
+		      // console.log(alsl);
+		      if(alsl && (alsl - als.illuminance) > 250)
+		      {
+			      document.getElementById("als").children[2].innerHTML="✅";
+			      als.stop();
+			      return;
+		      }
+		      alsl = als.illuminance;
+		      setTimeout(foo, 1000);
+	      }
+	      foo();
+      }
+      if("Magnetometer" in window)
+      {
 
-<ul>
-  <li>X-axis: <span id="Accelerometer_gx">0</span><span> m/s<sup>2</sup></span></li>
-  <li>Y-axis: <span id="Accelerometer_gy">0</span><span> m/s<sup>2</sup></span></li>
-  <li>Z-axis: <span id="Accelerometer_gz">0</span><span> m/s<sup>2</sup></span></li>
-</ul>
+	      document.getElementById("mag").children[1].innerHTML="✅";
+	      const mag = new Magnetometer();
+	      mag.start();
+	      omx = mag.x;
+	      omy = mag.y;
+	      omz = mag.z;
+	      function foo() {
+		      // console.log("mag", omx);
+		      if(omx && Math.abs(mag.x-omx)>10)
+		      {
+			      document.getElementById("mag").children[2].innerHTML="✅";
+			      mag.stop();
+			      return;
+		      }
+		      omx = mag.x;
+		      setTimeout(foo, 1000);
+	      }
+	      foo();
+      }
 
-<h4>Gyroscope</h4>
-<ul>
-  <li>X-axis: <span id="Gyroscope_x">0</span><span>&deg;/s</span></li>
-  <li>Y-axis: <span id="Gyroscope_y">0</span><span>&deg;/s</span></li>
-  <li>Z-axis: <span id="Gyroscope_z">0</span><span>&deg;/s</span></li>
-</ul>
-<h4>Light and proximity</h4>
-<ul>
-  <li>DeviceLight <span id="DeviceLight"></span></li>
-  <iframe src="envsensors/ambientlight.html" allow="ambient-light-sensor *"></iframe>
-  <li>LightLevel <span id="LightLevel"></span></li>
-  <li>DeviceProximity <span id="DeviceProximity"></span></li>
-  <li>UserProximity <span id="UserProximity"></span></li>
-</ul>
-</div>
-    </main>
+    </script>
 
-<script>
-
-function handleOrientation(event) {
-  updateFieldIfNotNull('Orientation_a', event.alpha);
-  updateFieldIfNotNull('Orientation_b', event.beta);
-  updateFieldIfNotNull('Orientation_g', event.gamma);
-  incrementEventCount();
-}
-
-function incrementEventCount(){
-  let counterElement = document.getElementById("num-observed-events")
-  let eventCount = parseInt(counterElement.innerHTML)
-  counterElement.innerHTML = eventCount + 1;
-}
-
-function updateFieldIfNotNull(fieldName, value, precision=10){
-  if (value != null)
-    document.getElementById(fieldName).innerHTML = value.toFixed(precision);
-}
-
-function handleMotion(event) {
-  updateFieldIfNotNull('Accelerometer_gx', event.accelerationIncludingGravity.x);
-  updateFieldIfNotNull('Accelerometer_gy', event.accelerationIncludingGravity.y);
-  updateFieldIfNotNull('Accelerometer_gz', event.accelerationIncludingGravity.z);
-
-  updateFieldIfNotNull('Accelerometer_x', event.acceleration.x);
-  updateFieldIfNotNull('Accelerometer_y', event.acceleration.y);
-  updateFieldIfNotNull('Accelerometer_z', event.acceleration.z);
-
-  updateFieldIfNotNull('Accelerometer_i', event.interval, 2);
-
-  updateFieldIfNotNull('Gyroscope_z', event.rotationRate.alpha);
-  updateFieldIfNotNull('Gyroscope_x', event.rotationRate.beta);
-  updateFieldIfNotNull('Gyroscope_y', event.rotationRate.gamma);
-  incrementEventCount();
-}
-
-let is_running = false;
-let demo_button = document.getElementById("start_demo");
-demo_button.onclick = function(e) {
-  e.preventDefault();
-
-  // Request permission for iOS 13+ devices
-  if (
-    DeviceMotionEvent &&
-    typeof DeviceMotionEvent.requestPermission === "function"
-  ) {
-    DeviceMotionEvent.requestPermission();
-  }
-
-  if (is_running){
-    window.removeEventListener("devicemotion", handleMotion);
-    window.removeEventListener("deviceorientation", handleOrientation);
-    demo_button.innerHTML = "Start demo";
-    demo_button.classList.add('btn-success');
-    demo_button.classList.remove('btn-danger');
-    is_running = false;
-  }else{
-    window.addEventListener("devicemotion", handleMotion);
-    window.addEventListener("deviceorientation", handleOrientation);
-    document.getElementById("start_demo").innerHTML = "Stop demo";
-    demo_button.classList.remove('btn-success');
-    demo_button.classList.add('btn-danger');
-    is_running = true;
-  }
-};
-
-// Light and proximity.
-window.addEventListener('devicelight', function(e) {
-   document.getElementById("DeviceLight").innerHTML="AmbientLight current Value: "+e.value+" Max: "+e.max+" Min: "+e.min;
-});
-
-window.addEventListener('lightlevel', function(e) {
-   document.getElementById("Lightlevel").innerHTML="Light level: "+e.value;
-});
-
-window.addEventListener('deviceproximity', function(e) {
-   document.getElementById("DeviceProximity").innerHTML="DeviceProximity current Value: "+e.value+" Max: "+e.max+" Min: "+e.min;
-});
-
-window.addEventListener('userproximity', function(event) {
-   document.getElementById("UserProximity").innerHTML="UserProximity: "+event.near;
-});
-</script>
+    <!--    <footer> -->
+    <!--      <p id="footer-note"> -->
+    <!-- &copy Copyright 2022 -->
+    <!-- <a href="./index.html">ReCap</a>. -->
+    <!-- All rights reserved. -->
+    <!--      </p> -->
+    <!--    </footer> -->
   </body>
 </html>
