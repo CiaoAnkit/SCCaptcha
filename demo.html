@@ -13,8 +13,9 @@
 <body>
 	<center>
 		<header>
-			<nav> <span>[<a id="task_button" href="/tasks/acc-task1.html">Go to Captcha
-        Task</a>]</span>  </nav>
+			<nav> <span>[<a href="/tasks/acc-task1.html">Go to Captcha
+        Tasks</a>]</span> <span>[<a href=
+        "/verbose.html">Verbose</a>]</span> </nav>
 		</header>
 		<main>
 			<h1 class="title">Sensor Checklist</h1>
@@ -78,14 +79,7 @@
 		document.getElementById("gyro").children[1].innerHTML = "Permission required";
 		document.getElementById("mag").children[1].innerHTML = "Permission required";
 	}
-	else{
-		if(gsflag == false) {
-		window.addEventListener("devicemotion", hm);
-	}
-	if(gsmflag == false) {
-		window.addEventListener("deviceorientation", ho);
-	}
-	}
+
 	function hm(e) {
 		document.getElementById("acc").children[1].innerHTML = "✅";
 		document.getElementById("gyro").children[1].innerHTML = "✅";
@@ -101,10 +95,6 @@
 		// possible_tasks.push("orient-task1");
 		window.removeEventListener("devicemotion", ho);
 	}
-	task_button.onclick = function(e){
-				var task=possible_tasks[Math.floor(Math.random()*possible_tasks.length)];
-				e.target.href = `/task/${task}.html`;
-			}
 	pa_button.onclick = function(e) {
 		e.preventDefault();
 		// Request permission for iOS 13+ devices
@@ -139,7 +129,12 @@
 			document.getElementById("mag").children[1].innerHTML = "❌";
 		}
 	}
-
+	if(gsflag == false) {
+		window.addEventListener("devicemotion", hm);
+	}
+	if(gsmflag == false) {
+		window.addEventListener("deviceorientation", ho);
+	}
 	</script>
 </body>
 

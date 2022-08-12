@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="generator" content=
+  "HTML Tidy for HTML5 for Linux version 5.7.45">
+  <meta charset="utf-8">
+  <meta name="viewport" content=
+  "width=device-width, initial-scale=1">
+  <link rel="stylesheet" href=
+  "https://unpkg.com/@picocss/pico@latest/css/pico.min.css">
+  <title>ReCap task 1</title>
+</head>
+<body>
+  <main class="container">
+    <center>
+      <h1>Captcha<br>Gyroscope</h1>
+      <article>
+        <p id='task'>Flick the device towards you</p>
+        <p id="status"></p>
+      </article>
+            <button id="pa" style="display:none">Permission Access</button>
+
+    </center>
+    <script type="module">
+       import {Gyroscope} from '../js/motion-sensors.js';
+      let demo_button = document.getElementById("pa");
+    demo_button.onclick = function(e) {
+    e.preventDefault();
+
+  // Request permission for iOS 13+ devices
+  if (
+    DeviceMotionEvent &&
+    typeof DeviceMotionEvent.requestPermission === "function"
+  ) {
+    DeviceMotionEvent.requestPermission();
+  }
+  }
+
+  if((DeviceMotionEvent && typeof DeviceMotionEvent.requestPermission==="function") || ("Gyroscope" in window)){
+                  let la = new Gyroscope();
+
+                  la.start();
+                  la.addEventListener('reading',function f(e)  {
+                            document.getElementById('status').innerHTML = `X: ${(la.x)}<br>Y: ${(la.y)}<br>Z: ${(la.z)}`;
+                            if( Math.abs(la.x)> 3 ) {
+                                      document.getElementById('status').innerHTML =`<ins> CONGRATS!!! <br> You can move to the next task.</ins>`;
+                                      // document.getElementById('status').innerHTML = "✅";
+                                      la.stop();
+                                      la.removeEventListener('reading',f );
+                                      return;
+                                    }
+                          });
+                }
+        else {
+                  document.getElementById('status').innerHTML = "Gyroscope not supported";
+                }
+    </script>
+  </main>
+  <nav>
+    <span>[<a href="./acc-task2.html">Prev</a>]</span>
+    <span>[<a href="./gyro-task2.html">Next</a>]</span>
+  </nav>
+</body>
+</html>

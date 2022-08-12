@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="generator" content=
+  "HTML Tidy for HTML5 for Linux version 5.7.45">
+  <meta charset="utf-8">
+  <meta name="viewport" content=
+  "width=device-width, initial-scale=1">
+  <link rel="stylesheet" href=
+  "https://unpkg.com/@picocss/pico@latest/css/pico.min.css">
+  <title>ReCap task</title>
+</head>
+<body>
+  <main class="container">
+    <center>
+      <h1>Captcha<br> Ambient Light Sensor</h1>
+      <article>
+        <p id='task'>Cover the ambient light sensor for three seconds.</p>
+        <p id="status"></p>
+      </article>
+    </center>
+    <script>
+        if( "AmbientLightSensor" in window){
+                  let la = new AmbientLightSensor();
+                  let ct= new Date();
+                  ct.setDate(ct.getDate() + 100);;
+                  la.start();
+                  la.addEventListener('reading', function f(e) {
+                          document.getElementById('status').innerHTML = `L: ${(la.illuminance)}`;
+                          if(la.illuminance ==0)
+                          {
+                                  ct=Date.now();
+                          }
+                          else if(la.illuminance >0)
+                          {
+                                  if(Date.now()-ct>3000)
+                                  {
+                                      document.getElementById('status').innerHTML =`<ins> CONGRATS!!! <br> You can move to the next task.</ins>`;
+
+                                          // document.getElementById('status').innerHTML = `✅`;
+                                           la.stop();
+                                          la.removeEventListener('reading', f);
+                                      return;
+
+                                  }
+                                  else
+                                  {
+                                          ct=Date.now();
+                                        }
+                          }
+                        });
+                        }
+        else {
+                  document.getElementById('status').innerHTML = "ALS not supported";
+                }
+    </script>
+  </main>
+  <!-- <nav> -->
+  <!--   <span>[<a href="/tasks/als-task1.html">Prev</a>]</span> -->
+  <!--   <span>[<a href="/tasks/mag-task1.html">Next</a>]</span> -->
+  <!-- </nav> -->
+</body>
+</html>

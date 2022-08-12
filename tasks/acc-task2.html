@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="generator" content=
+  "HTML Tidy for HTML5 for Linux version 5.7.45">
+  <meta charset="utf-8">
+  <meta name="viewport" content=
+  "width=device-width, initial-scale=1">
+  <link rel="stylesheet" href=
+  "https://unpkg.com/@picocss/pico@latest/css/pico.min.css">
+  <title>ReCap task 1</title>
+</head>
+<body>
+  <main class="container">
+    <center>
+      <h1>Captcha<br>Accelerometer</h1>
+      <article>
+        <!-- <p id='task'> Invert your device against gravity</p> -->
+        <p id='task'> Flip the device screen facing down.</p>
+        <p id="status"></p>
+      </article>
+    </center>
+    <button id="pa" style="display:none">Permission Access</button>
+
+    <script type="module">
+      import {Accelerometer, GravitySensor} from '../js/motion-sensors.js';
+ let demo_button = document.getElementById("pa");
+    demo_button.onclick = function(e) {
+    e.preventDefault();
+
+  // Request permission for iOS 13+ devices
+  if (
+    DeviceMotionEvent &&
+    typeof DeviceMotionEvent.requestPermission === "function"
+  ) {
+    DeviceMotionEvent.requestPermission();
+  }
+  }
+        if (
+    DeviceMotionEvent &&
+    typeof DeviceMotionEvent.requestPermission == "function"
+  ) {
+    DeviceMotionEvent.requestPermission();
+  }
+  if(DeviceMotionEvent.requestPermission || ("Accelerometer" in window)){
+                  let la = new GravitySensor();
+                  la.start();
+                  let ig = la.z;
+                  let flag = true;
+                  la.addEventListener('reading', function f(e) {
+                    if(flag && la.z){
+                    ig = la.z;
+                    flag=false;
+                    }
+                            document.getElementById('status').innerHTML = `Z: ${la.z} ig: ${ig}`;
+                            if( la.z*ig< -13 ){
+                                       document.getElementById('status').innerHTML =`<ins> CONGRATS!!! <br> You can move to the next task.</ins>`;
+                                      la.stop();
+                                      la.removeEventListener('reading',f);
+                                     return;
+                                    }
+                          });
+                }
+        else{
+                  document.getElementById('status').innerHTML = "Accelerometer not supported";
+                }
+    </script>
+  </main>
+  <nav>
+    <span>[<a href="/tasks/acc-task1.html">Prev</a>]</span>
+    <span>[<a href="./gyro-task1.html">Next</a>]</span>
+  </nav>
+</body>
+</html>
