@@ -15,7 +15,7 @@
     <center>
       <h1>Captcha<br>Ambient Light Sensor</h1>
       <article>
-        <p id='task'>Cover the ambient light sensor twice.</p>
+        <p id='task'>Cover the ambient light sensor .</p>
         <p id="status"></p>
       </article>
     </center>
@@ -24,10 +24,10 @@
                   let la = new AmbientLightSensor();
 
                   la.start();
-                  let c = 2;
+                  let c = 1;
                   la.addEventListener('reading', (e) => {
                           document.getElementById('status').innerHTML = `L: ${(la.illuminance)} c: ${c} `;
-                            if( la.illuminance <=20 ){
+                            if( la.illuminance <=55 ){
                                       c--;
                                       if( c == 0){
                                       document.getElementById('status').innerHTML =`<ins> CONGRATS!!! <br> You can move to the next task.</ins>`;
@@ -46,8 +46,8 @@
     </script>
   </main>
   <nav>
-    <span>[<a href="/tasks/gyro-task2.html">Prev</a>]</span>
-    <span>[<a href="/tasks/als-task2.html">Next</a>]</span>
+    <span>[<a href="/tasks/gyro-task1.html">Prev</a>]</span>
+    <span>[<a href="/demo.html">End</a>]</span>
   </nav>
 </body>
 </html>

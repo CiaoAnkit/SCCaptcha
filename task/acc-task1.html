@@ -37,13 +37,26 @@
   }
   }
 
-  if( (DeviceMotionEvent && typeof DeviceMotionEvent.requestPermission==="function") || ("Accelerometer" in window)){
+  window.addEventListener('devicemotion', function f(la) {
+
+                            document.getElementById('status').innerHTML = `X: ${la.accelerationIncludingGravity.x} `;
+                            if( Math.abs(la.accelerationIncludingGravity.x) > 10 ){
+                                       document.getElementById('status').innerHTML =`<ins> CONGRATS!!! <br> You can now exit.</ins>`;
+                                      window.removeEventListener('devicemotion',f);
+                                     return;
+                                    }
+
+                          });
+
+
+
+  if( DeviceMotionEvent || ("Accelerometer" in window)){
                   let la = new LinearAccelerationSensor();
                   la.start();
                   la.addEventListener('reading', function f(e)  {
                             document.getElementById('status').innerHTML = `X: ${(la.x)}`;
                             if( Math.abs(la.x)> 5 ) {
-                                      document.getElementById('status').innerHTML =`<ins> CONGRATS!!! <br> You can move to the next task.</ins>`;
+                                      document.getElementById('status').innerHTML =`<ins> CONGRATS!!! <br> You can now exit.</ins>`;
                                       la.removeEventListener('reading',f);
                                       return;
                                     }

@@ -1,141 +1,164 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-	<meta name="generator" content="HTML Tidy for HTML5 for Linux version 5.7.45">
-	<meta charset="utf-8">
-	<title>ReCap</title>
-	<meta name="description" content="Captcha">
-	<meta name="author" content="Prototype for ReCaptcha">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<link rel="stylesheet" href="./style.css"> </head>
-
+    <meta name="generator" content=
+    "HTML Tidy for HTML5 for Linux version 5.7.45">
+    <meta charset="utf-8">
+    <title>ReCap</title>
+    <meta name="description" content="Captcha">
+    <meta name="author" content="Prototype for ReCaptcha">
+    <meta name="viewport" content=
+    "width=device-width, initial-scale=1">
+    <script src="https://www.google.com/recaptcha/api.js"></script>
+    <link rel="stylesheet" href="./style.css">
+</head>
 <body>
-	<center>
-		<header>
-			<nav> <span>[<a href="/tasks/acc-task1.html">Go to Captcha
-        Tasks</a>]</span> <span>[<a href=
-        "/verbose.html">Verbose</a>]</span> </nav>
-		</header>
-		<main>
-			<h1 class="title">Sensor Checklist</h1>
-			<table>
-				<thead>
-					<tr>
-						<th>Sensor</th>
-						<th>Support</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr id="acc">
-						<td data-column="Sensor">Accelerometer</td>
-						<td data-column="Support">❌</td>
-					</tr>
-					<tr id="gyro">
-						<td data-column="Sensor">Gyroscope</td>
-						<td data-column="Support">❌</td>
-					</tr>
-					<tr id="mag">
-						<td data-column="Sensor">Magnetometer</td>
-						<td data-column="Support">❌</td>
-					</tr>
-					<tr id="als">
-						<td data-column="Sensor">Ambient Light Sensor</td>
-						<td data-column="Support">❌</td>
-					</tr>
-				</tbody>
-			</table>
-			<button id="pa" style="display:none">Permission Access</button>
-		</main>
-	</center>
-	<script>
-	let gsflag = false;
-	let gsmflag = false;
-	possible_tasks = [];
-	if("Accelerometer" in window) {
-		gsflag = true;
-		document.getElementById("acc").children[1].innerHTML = "✅";
-		possible_tasks.push("acc-task1");
-		possible_tasks.push("acc-task2");
-	}
-	if("Gyroscope" in window) {
-		document.getElementById("gyro").children[1].innerHTML = "✅";
-		possible_tasks.push("gyro-task1");
-		possible_tasks.push("gyro-task2");
-	}
-	if("AmbientLightSensor" in window) {
-		document.getElementById("als").children[1].innerHTML = "✅";
-		possible_tasks.push("als-task1");
-		possible_tasks.push("als-task2");
-	}
-	if("Magnetometer" in window) {
-		gsmflag = true;
-		document.getElementById("mag").children[1].innerHTML = "✅";
-	}
-	let pa_button = document.getElementById("pa");
-	if(navigator.platform.match(/MacIntel|iPhone|iPad|iPod/i)) {
-		pa_button.style.display = "block";
-		document.getElementById("acc").children[1].innerHTML = "Permission required";
-		document.getElementById("gyro").children[1].innerHTML = "Permission required";
-		document.getElementById("mag").children[1].innerHTML = "Permission required";
-	}
+    <center>
+        <header>
+            <nav>
+                <!-- <span>[<a id="captask" href=
+                     "/tasks/fallback.html">Go to Captcha
+                     Tasks</a>]</span> -->
+                <span>[<a href=
+                "/verbose.html">Verbose</a>]</span>
+            </nav>
+        </header>
+        <main>
+            <h1 class="title">Sensor Checklist</h1>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Sensor</th>
+                        <th>Support</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr id="acc">
+                        <td data-column="Sensor">Accelerometer</td>
+                        <td data-column="Support">❌</td>
+                    </tr>
+                    <tr id="gyro">
+                        <td data-column="Sensor">Gyroscope</td>
+                        <td data-column="Support">❌</td>
+                    </tr>
+                    <tr id="mag">
+                        <td data-column="Sensor">Magnetometer</td>
+                        <td data-column="Support">❌</td>
+                    </tr>
+                    <tr id="als">
+                        <td data-column="Sensor">Ambient Light
+                        Sensor</td>
+                        <td data-column="Support">❌</td>
+                    </tr>
+                </tbody>
+            </table><button id="pa" style="display:none">Permission
+            Access</button>
+        </main>
+    </center>
+    <script>
+               let gsflag = false;
+               let gsmflag = false;
+                let fallback = false;
+                possible_tasks = [];
+               if("Accelerometer" in window) {
+                       gsflag = true;
+                       document.getElementById("acc").children[1].innerHTML = "✅";
+                       possible_tasks.push("acc-task1");
+                       possible_tasks.push("acc-task2");
+               }
+               if("Gyroscope" in window) {
+                       document.getElementById("gyro").children[1].innerHTML = "✅";
+                       possible_tasks.push("gyro-task1");
+                       possible_tasks.push("gyro-task2");
+               }
+               if("AmbientLightSensor" in window) {
+                       document.getElementById("als").children[1].innerHTML = "✅";
+                       possible_tasks.push("als-task1");
+                       possible_tasks.push("als-task2");
+               }
+               if("Magnetometer" in window) {
+                       gsmflag = true;
+                       document.getElementById("mag").children[1].innerHTML = "✅";
+               }
+                if(possible_tasks.length == 0) fallback = true;
+               let pa_button = document.getElementById("pa");
+               if(navigator.platform.match(/MacIntel|iPhone|iPad|iPod/i)) {
+                       pa_button.style.display = "block";
+                       document.getElementById("acc").children[1].innerHTML = "Permission required";
+                       document.getElementById("gyro").children[1].innerHTML = "Permission required";
+                       document.getElementById("mag").children[1].innerHTML = "Permission required";
+               }
 
-	function hm(e) {
-		document.getElementById("acc").children[1].innerHTML = "✅";
-		document.getElementById("gyro").children[1].innerHTML = "✅";
-		possible_tasks.push("acc-task1");
-		possible_tasks.push("acc-task2");
-		possible_tasks.push("gyro-task1");
-		possible_tasks.push("gyro-task2");
-		window.removeEventListener("devicemotion", hm);
-	}
+               function hm(e) {
+                       document.getElementById("acc").children[1].innerHTML = "✅";
+                       document.getElementById("gyro").children[1].innerHTML = "✅";
+                       possible_tasks.push("acc-task1");
+                       possible_tasks.push("acc-task2");
+                       possible_tasks.push("gyro-task1");
+                       possible_tasks.push("gyro-task2");
+                       window.removeEventListener("devicemotion", hm);
+               }
 
-	function ho(e) {
-		document.getElementById("mag").children[1].innerHTML = "✅ (older api)";
-		// possible_tasks.push("orient-task1");
-		window.removeEventListener("devicemotion", ho);
-	}
-	pa_button.onclick = function(e) {
-		e.preventDefault();
-		// Request permission for iOS 13+ devices
-		if(DeviceMotionEvent && typeof DeviceMotionEvent.requestPermission === "function") {
-			DeviceMotionEvent.requestPermission().then(permissionState => {
-				if(permissionState === 'granted') {
-					document.getElementById("acc").children[1].innerHTML = "✅";
-					document.getElementById("gyro").children[1].innerHTML = "✅";
-					possible_tasks.push("acc-task1");
-					possible_tasks.push("acc-task2");
-					possible_tasks.push("gyro-task1");
-					possible_tasks.push("gyro-task2");
-				} else {
-					document.getElementById("acc").children[1].innerHTML = "❌";
-					document.getElementById("gyro").children[1].innerHTML = "❌";
-				}
-			})
-		} else {
-			document.getElementById("acc").children[1].innerHTML = "❌";
-			document.getElementById("gyro").children[1].innerHTML = "❌";
-		}
-		if(DeviceOrientationEvent && typeof DeviceOrientationEvent.requestPermission === "function") {
-			DeviceOrientationEvent.requestPermission().then(permissionState => {
-				if(permissionState === 'granted') {
-					document.getElementById("mag").children[1].innerHTML = "✅ (older api)";
-					// possible_tasks.push("orient-task1");
-				} else {
-					document.getElementById("mag").children[1].innerHTML = "❌";
-				}
-			});
-		} else {
-			document.getElementById("mag").children[1].innerHTML = "❌";
-		}
-	}
-	if(gsflag == false) {
-		window.addEventListener("devicemotion", hm);
-	}
-	if(gsmflag == false) {
-		window.addEventListener("deviceorientation", ho);
-	}
-	</script>
+               function ho(e) {
+                       document.getElementById("mag").children[1].innerHTML = "✅ (older api)";
+                       // possible_tasks.push("orient-task1");
+                       window.removeEventListener("devicemotion", ho);
+               }
+               pa_button.onclick = function(e) {
+                       e.preventDefault();
+                       // Request permission for iOS 13+ devices
+                       if(DeviceMotionEvent && typeof DeviceMotionEvent.requestPermission === "function") {
+                               DeviceMotionEvent.requestPermission().then(permissionState => {
+                                       if(permissionState === 'granted') {
+                                               document.getElementById("acc").children[1].innerHTML = "✅";
+                                               document.getElementById("gyro").children[1].innerHTML = "✅";
+                                               possible_tasks.push("acc-task1");
+                                               possible_tasks.push("acc-task2");
+                                               possible_tasks.push("gyro-task1");
+                                               possible_tasks.push("gyro-task2");
+                                       } else {
+                                               fallback=true;
+                                               document.getElementById("acc").children[1].innerHTML = "❌";
+                                               document.getElementById("gyro").children[1].innerHTML = "❌";
+                                       }
+                               })
+                       } else {
+                               document.getElementById("acc").children[1].innerHTML = "❌";
+                               document.getElementById("gyro").children[1].innerHTML = "❌";
+                       }
+                       if(DeviceOrientationEvent && typeof DeviceOrientationEvent.requestPermission === "function") {
+                               DeviceOrientationEvent.requestPermission().then(permissionState => {
+                                       if(permissionState === 'granted') {
+                                               document.getElementById("mag").children[1].innerHTML = "✅ (older api)";
+                                               // possible_tasks.push("orient-task1");
+                                       } else {
+                                               fallback=true;
+                                               document.getElementById("mag").children[1].innerHTML = "❌";
+                                       }
+                               });
+                       } else {
+                               document.getElementById("mag").children[1].innerHTML = "❌";
+                       }
+               }
+               if(gsflag == false) {
+                       window.addEventListener("devicemotion", hm);
+               }
+               if(gsmflag == false) {
+                       window.addEventListener("deviceorientation", ho);
+               }
+            function getTask(){
+                if(possible_tasks.length>0){
+                    var item = possible_tasks[Math.floor(Math.random()*possible_tasks.length)];
+                    window.location.replace("/task/" + item + ".html");
+                }
+                else{
+                    window.location.replace("/task/fallback.html")
+                }
+            }
+    </script>
+    <center>
+            </div><button onclick="getTask()">Get Captcha</button>
+        </form>
+    </center>
 </body>
-
 </html>

@@ -42,7 +42,26 @@
   ) {
     DeviceMotionEvent.requestPermission();
   }
-  if(DeviceMotionEvent.requestPermission || ("Accelerometer" in window)){
+  let flag = true;
+  let ig = 0;
+  let done = false;
+  window.addEventListener('devicemotion', function f(la) {
+                    if(flag && la.accelerationIncludingGravity.z){
+                    ig = la.accelerationIncludingGravity.z;
+                    flag=false;
+                    }
+                            document.getElementById('status').innerHTML = `Z: ${la.accelerationIncludingGravity.z} ig: ${ig}`;
+                            if( la.accelerationIncludingGravity.z*ig< -(ig*ig) ){
+                                       document.getElementById('status').innerHTML =`<ins> CONGRATS!!! <br> You can now exit.</ins>`;
+                                      window.removeEventListener('devicemotion',f);
+                                      done=true;
+                                     return;
+                                    }
+
+                          });
+
+
+  if( ("Accelerometer" in window)){
                   let la = new GravitySensor();
                   la.start();
                   let ig = la.z;
@@ -54,7 +73,7 @@
                     }
                             document.getElementById('status').innerHTML = `Z: ${la.z} ig: ${ig}`;
                             if( la.z*ig< -13 ){
-                                       document.getElementById('status').innerHTML =`<ins> CONGRATS!!! <br> You can move to the next task.</ins>`;
+                                       document.getElementById('status').innerHTML =`<ins> CONGRATS!!! <br> You can now exit.</ins>`;
                                       la.stop();
                                       la.removeEventListener('reading',f);
                                      return;
