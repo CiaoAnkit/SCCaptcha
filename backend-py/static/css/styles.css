@@ -4,7 +4,7 @@
   position: absolute;
   top: 0px;
   left: 0px;
-  background-color: blue;
+  background-color: grey;
 }
 
 #ball {
@@ -13,8 +13,8 @@
   background-color: red;
   border-radius: 25px;
   position: absolute;
-  top: 50px;
-  left: 250px;
+  left: 165px;
+  top: 325px;
 }
 
 .rotate90 {

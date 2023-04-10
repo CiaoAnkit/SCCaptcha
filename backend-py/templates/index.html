@@ -11,18 +11,25 @@
 </head>
 
 <body>
-	<div id="gameContainer">
+	<div id="gameContainer" height="{{gcheight}}px" width="{{gcwidth}}px">
 		<div id="ball"></div>
 		<div id="imgs">
-			<img id="img1" src="pics/{{this}}.png" alt="arrow" width="50px" height="50px"
-				style="position: absolute; left: {{ x }}px; top: {{ y }}px;">
-			<img id="img2" src="pics/{{this}}.png" alt="arrow" width="50px" height="50px" class="rotate90">
-			<img id="img3" src="pics/{{this}}.png" alt="arrow" width="50px" height="50px" class="rotate180">
-			<img id="img4" src="pics/{{this}}.png" alt="arrow" width="50px" height="50px" class="rotate270">
+			<img id="img0" src="pics/tmp.png" alt="arrow" width="50px" height="50px">
+			<img id="img1" src="pics/tmp.png" alt="arrow" width="50px" height="50px" class="rotate90">
+			<img id="img2" src="pics/tmp.png" alt="arrow" width="50px" height="50px" class="rotate180">
+			<img id="img3" src="pics/tmp.png" alt="arrow" width="50px" height="50px" class="rotate270">
+		</div>
+		<div id="blocks">
+			<img id="block0" src="pics/tile.png" alt="arrow" width="70px" height="70px">
+			<img id="block1" src="pics/tile.png" alt="arrow" width="70px" height="70px">
+			<img id="block2" src="pics/tile.png" alt="arrow" width="70px" height="70px">
+			<img id="block3" src="pics/tile.png" alt="arrow" width="70px" height="70px">
 		</div>
 	</div>
 	<script>
 		let squares = document.getElementById("imgs").children
+		let bricks = document.getElementById("blocks").children
+
 		let captchaBox = [];
 		const ball = document.querySelector("#ball");
 		const gameContainer = document.querySelector("#gameContainer");
@@ -31,6 +38,8 @@
 		let accy = 0;
 		const squareSize = 20;
 		const tlimit = 20;
+		let brickWidth = 50;
+		let brickHeight = 50;
 		let margin = 10;
 		let time = 0
 		// let squares = document.getElementById("imgs").children
@@ -64,7 +73,16 @@
 					ball.style.left = ballLeft + "px";
 					f = true;
 				}
-
+				for (var i=0;i<4;i++){
+					b = bricks[i]
+					if(ballLeft + ball.offsetWidth > b.x && ballLeft < b.x+brickWidth &&
+					   ballTop + ball.offsetHeight > b.y && ballTop  < b.y+brickHeight) {
+					
+						ballLeft = ball.offsetLeft + accx * 2.5;
+						ballTop = ball.offsetTop - accy * 2.5;
+	
+					}
+				}
 				if (!f) {
 					ball.style.left = ballLeft + "px";
 					ball.style.top = ballTop + "px";
@@ -158,13 +176,14 @@
 		// }
 		////place rotated images
 		box_pos = {{box_pos | tojson}};
+		obs_pos = {{obs_pos | tojson}};
 		for (let i = 0; i < 4; i++) {
 			let square = squares[i];
 			// square.style.width = squareSize + "px";
 			// square.style.height = squareSize + "px";
 			square.style.position = "absolute";
-			square.style.left = Math.floor(box_pos[i][0] * (gameContainer.offsetWidth - 2 * squareSize)) + "px";
-			square.style.top = Math.floor(box_pos[i][1] * (gameContainer.offsetHeight - 2 * squareSize)) + "px";
+			square.style.left = (box_pos[i][0]) - {{offset}} + "px";
+			square.style.top = (box_pos[i][1]) - {{offset}} + "px";
 			// square.style.left = (box_pos[i][0] * (gameContainer.offsetWidth - 2 * squareSize)) + "px";
 			// square.style.top = (box_pos[i][1] * (gameContainer.offsetHeight - 2 * squareSize)) + "px";
 			let areaBox = {
@@ -176,7 +195,13 @@
 			console.log(areaBox)
 			captchaBox.push(areaBox)
 		}
+		for(let i=0;i<4;i++){
+			let b = bricks[i]
 
+			b.style.position = "absolute";
+			b.style.left = (obs_pos[i][0]) - {{offset}} + "px";
+			b.style.top = (obs_pos[i][1]) - {{offset}} + "px";
+		}
 		captchaid = setInterval(checkSquare, 16);
 		setTimeout(function () {
 			location.reload();
