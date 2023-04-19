@@ -26,12 +26,14 @@ def start():
     img_id = random.randint(0, 1)
     rotate_90_by = random.randint(0,3)
     org_img = Image.open(f"./static/pics/{img_id}.png")
-    rotated_img = org_img.rotate(rotate_90_by*90) 
+    rotated_img = org_img.rotate(rotate_90_by*(-90)) 
     rotated_img.save("./static/pics/tmp.png")
     session['user_id'] = user_id
     # number = random.randint(1, 10)
     ans = (4-rotate_90_by)%4 
+    # ans = rotate_90_by
     user_data[user_id]['ans'] = ans
+    user_data[user_id]['rotate'] = rotate_90_by
     box_pos = []
     obs_pos = []
     for i, j in [(i,j) for i in [0,1] for j in [0,1]]:
@@ -82,10 +84,12 @@ def guess():
         response = {
             'bool': 'true',
         }
+        print(guess,ans, user_data.get(user_id).get('rotate'))
     else:
         response = {
             'bool': 'false',
         }
+        print(guess,ans, user_data.get(user_id).get('rotate'))
     return jsonify(response)
 
 if __name__ == '__main__':
