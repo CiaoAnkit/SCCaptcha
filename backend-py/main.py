@@ -1,16 +1,52 @@
 import random
 import uuid
+import math
 from PIL import Image
 from flask import Flask, render_template, session, request, jsonify
 MAX_SPEED = 5
 GC_WIDTH = 370
 GC_HEIGHT = 700
+SQUARE_SIZE = 40 
+THRESHOLD = 50
 offset = 35
 offset2 = 70
 app = Flask(__name__,static_folder='static',static_url_path='')
 app.secret_key = 'secretkey'
 
 user_data = {}
+
+def dist(a, b):
+    return math.sqrt((a[0]-b[0])**2 + (a[1]-b[1])**2)
+
+def inbox(point,corner ,size=SQUARE_SIZE):
+    for i in range(0,2):
+        if not (point[i] > corner[i] and point[i] < corner[i] + size):
+            return False
+    return True
+
+
+def verify_path(path,user_id):
+    '''
+    Verify if the path is valid
+    '''
+    obs = user_data[user_id]['obs']
+    captcha_box = user_data[user_id]['captcha_box'][user_data[user_id]['ans']]
+    pathlen = len(path)
+    if pathlen <= 2:
+        return False
+    prevpoint = path[0]
+    for i in range(1,pathlen):
+        for corner in obs:
+            if inbox(path[i],corner):
+                return False
+        dist_trav = dist(prevpoint,path[i])
+        if dist_trav > THRESHOLD:
+            return False
+        prevpoint = path[i]
+    if not inbox(path[-1],captcha_box):
+        return False
+    return True
+
 
 @app.route('/', methods=['GET'])
 def start():
@@ -69,6 +105,8 @@ def start():
         obs_pos.append((obs_x,obs_y))
         # obstacle_pos.append(( offset + random.randint(i*(GC_WIDTH//2),  (i+1)*(GC_WIDTH)),
         #                 ( offset + random.randint(j*(GC_HEIGHT//2),  (j+1)*(GC_HEIGHT))) ))
+    user_data[user_id]['obs'] = obs_pos
+    user_data[user_id]['captcha_box'] = box_pos 
     return render_template('index.html',offset=offset,offset2=offset2,gcheight = GC_HEIGHT,gcwidth=GC_WIDTH,box_pos=box_pos,obs_pos=obs_pos)
 
 @app.route('/guess', methods=['POST'])
@@ -81,9 +119,15 @@ def guess():
             'message': 'Please start a new game before guessing.',
         }
     elif guess == ans:
-        response = {
-            'bool': 'true',
-        }
+        path = request.json['path']
+        if verify_path(path,user_id):
+            response = {
+                'bool': 'true',
+            }
+        else:
+            response = {
+                    'bool': 'false'
+            }
         print(guess,ans, user_data.get(user_id).get('rotate'))
     else:
         response = {
