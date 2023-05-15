@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta name="generator" content="HTML Tidy for HTML5 for Linux version 5.7.45">
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="css/styles.css">
+	<!-- <link rel="stylesheet" href="./gyro-task1.css"> -->
+	<title>ReCap task 1</title>
+</head>
+
+<body>
+	<div id="gameContainer" height="700px" width="370px">
+		<div id="ball"></div>
+		<div id="imgs">
+			<img id="img0" src="pics/tmp.png" alt="arrow" width="50px" height="50px">
+			<img id="img1" src="pics/tmp.png" alt="arrow" width="50px" height="50px" class="rotate90">
+			<img id="img2" src="pics/tmp.png" alt="arrow" width="50px" height="50px" class="rotate180">
+			<img id="img3" src="pics/tmp.png" alt="arrow" width="50px" height="50px" class="rotate270">
+		</div>
+		<div id="blocks">
+			<img id="block0" src="pics/tile.png" alt="arrow" width="70px" height="70px">
+			<img id="block1" src="pics/tile.png" alt="arrow" width="70px" height="70px">
+			<img id="block2" src="pics/tile.png" alt="arrow" width="70px" height="70px">
+			<img id="block3" src="pics/tile.png" alt="arrow" width="70px" height="70px">
+		</div>
+	</div>
+	<script>
+		gcwidth = 370
+		gcheight = 700
+		offset = 35
+		offset2 = 70
+		let squares = document.getElementById("imgs").children
+		let bricks = document.getElementById("blocks").children
+
+		let captchaBox = [];
+		let collisonBox = [];
+		const ball = document.querySelector("#ball");
+		const gameContainer = document.querySelector("#gameContainer");
+
+		let accx = 0;
+		let accy = 0;
+		const squareSize = 20;
+		const tlimit = 1;
+		let brickWidth = 70;
+		let brickHeight = 70;
+		let margin = 10;
+		let time = 0
+		// let squares = document.getElementById("imgs").children
+		// let captchaBox = []
+		// let captchaDone = false
+		let captchaid = 0
+		let inSquare = [false, false, false, false]
+
+		if ('Accelerometer' in window) {
+			const acc = new Accelerometer({frequency: 60});
+			acc.start();
+			let ae = acc.addEventListener('reading', async function moveBall(e) {
+				accx = acc.x;
+				accy = acc.y;
+				// console.log(x, y)
+				let ballLeft = ball.offsetLeft - accx * 5;
+				let ballTop = ball.offsetTop + accy * 5;
+				let f = false;
+				if (ballLeft <= 0 || ballLeft + ball.offsetWidth >= gameContainer.offsetWidth) {
+					if ((ballTop <= 0 || ballTop + ball.offsetHeight >= gameContainer.offsetHeight) && !f) {
+						return;
+					}
+					ball.style.top = ballTop + "px";
+					f = true;
+
+				}
+				else if ((ballTop <= 0 || ballTop + ball.offsetHeight >= gameContainer.offsetHeight) && !f) {
+					if (ballLeft <= 0 || ballLeft + ball.offsetWidth >= gameContainer.offsetWidth) {
+						return;
+					}
+					ball.style.left = ballLeft + "px";
+					f = true;
+				}
+				for (var i=0;i<4;i++){
+					b = bricks[i]
+
+					ballTop = ball.offsetTop ;
+					if(ballLeft + ball.offsetWidth > b.offsetLeft && ballLeft < b.offsetLeft+brickWidth &&
+					   ballTop + ball.offsetHeight > b.offsetTop && ballTop  < b.offsetTop+brickHeight) {
+						// console.log(b);
+						ballLeft = ball.offsetLeft + acc.x ;
+						ball.style.left = ballLeft + "px";
+						f = true;
+						break;
+	
+					}
+					ballTop = ball.offsetTop + accy * 5;
+					ballLeft = ball.offsetLeft;
+					if(ballLeft + ball.offsetWidth > b.offsetLeft && ballLeft < b.offsetLeft+brickWidth &&
+					   ballTop + ball.offsetHeight > b.offsetTop && ballTop  < b.offsetTop+brickHeight) {
+						ballTop = ball.offsetTop - acc.y ;
+						ball.style.top = ballTop + "px";
+						f = true;
+						break;
+	
+					}
+					ballLeft = ball.offsetLeft - accx * 5;
+				}
+				if (!f) {
+					ball.style.left = ballLeft + "px";
+					ball.style.top = ballTop + "px";
+				}
+			});
+		} else {
+			console.error('Accelerometer not supported');
+		}
+
+		function responseHandler(data) {
+			console.log(data);
+			if (data['bool'] == "true") {
+
+				alert("Captcha passed")
+				// clearInterval(captchaid)
+				ball.style.left = 150;
+				ball.offsetTop = 150;
+				captchaid = setInterval(checkSquare, 16);
+				// location.reload();
+				// location.href = "https://iiit.ac.in"
+			}
+
+			else {
+				// alert("Captcha failed, try again")
+				// if (confirm("Captcha failed, try again")) {
+					// clearInterval(captchaid)
+					// location.reload();
+				// }
+				ball.style.left = 150;
+				ball.offsetTop = 150;
+				captchaid = setInterval(checkSquare, 16);
+			}
+
+
+		}
+
+		function checkSquare() {
+			let square;
+			let margin = squareSize;
+			for (let i = 0; i < 4; i++) {
+				let bool = ((ball.offsetLeft < captchaBox[i].right) && (ball.offsetLeft > captchaBox[i].left) && (ball.offsetTop < captchaBox[i].bottom) && (ball.offsetTop > captchaBox[i].top));
+				if (inSquare[i] == true) {
+					console.log("hit",i)
+					if (bool) {
+							time += 1;
+						}
+						else {
+							time = 0;
+							inSquare[i] = false;
+						}
+					// else {
+					// 	time = 0;
+					// 	inSquare[i] = false;
+					// }
+
+					if (time > tlimit) {
+						// const requestOptions = {
+						// 	method: 'POST',
+						// 	headers: {'Content-Type': 'application/json'},
+						// 	body: JSON.stringify({guess: i})
+						// };
+						// fetch("guess", requestOptions)
+						// 	.then(response => response.json())
+						// 	.then(data => responseHandler(data))
+						// 	.catch(error => console.error('Error:', error));
+						// console.log(i,captchaBox[i]);
+						// console.log(ball);
+						if(i==0){
+							alert("Captcha passed")
+						}
+						else{
+							alert("Captcha failed")
+						}
+						clearInterval(captchaid);
+
+					}
+				
+				}
+				else if (bool) {
+						inSquare[i] = true
+						console.log("box ",i);
+						time = 0
+					}
+				
+
+			}
+		}
+
+
+
+		//place rotated images
+		// for (let i = 0; i < 4; i++) {
+		// 	let square = squares[i];
+		// 	// square.style.width = squareSize + "px";
+		// 	// square.style.height = squareSize + "px";
+		// 	square.style.position = "absolute";
+		// 	square.style.left = Math.Math.floor(Math.random() * (gameContainer.offsetWidth - 2*squareSize)) + "px";
+		// 	square.style.top = Math.Math.floor(Math.random() * (gameContainer.offsetHeight - 2*squareSize)) + "px";
+		// 	let areaBox = {
+		// 		'left': (parseInt(square.style.left.replace(/px/,""))-margin)+"px",
+		// 		'right': (parseInt(square.style.left.replace(/px/,""))+squareSize+margin)+"px",
+		// 		'top': (parseInt(square.style.top.replace(/px/,""))-margin)+"px",
+		// 		'bottom': (parseInt(square.style.top.replace(/px/,""))+squareSize+margin)+"px"
+		// 	}
+		// 	console.log(areaBox)
+		// 	captchaBox.push(areaBox)
+		// }
+		////place rotated images
+		box_pos = [];
+		obs_pos = [];
+		a =  [[0,0],[0,1],[1,0],[1,1]];
+		for(z=0;z<4;z++)
+		{
+			[i,j] = a[z];
+		        sh = Math.floor(gcheight/6) - offset
+		        sw = Math.floor(gcwidth/6) - offset
+		        lh = Math.floor(gcheight/2) - offset
+		        lw = Math.floor(gcwidth/2) - offset
+		        borderw = Math.floor(gcwidth/2) -offset -sw
+		        borderh = Math.floor(gcheight/2) - offset -sh
+		        // area_choice=random.choices([0,1,2],weights=[sh*sw,(lh-offset)*sw,(lw-offset)*sh])
+			area_choice = Math.floor(Math.random()*3)
+		        box_x=0
+		        box_y=0
+			if (area_choice[0]==0){
+		            box_x =  Math.floor(gcwidth/2) + Math.pow(-1,i+1)*(borderw+Math.random()*sw)
+		            box_y =  Math.floor(gcheight/2) + Math.pow(-1,j+1)*(borderw+Math.random()*sh)
+			}
+			else if (area_choice[0]==1){
+		            box_x = Math.floor(gcwidth/2) + Math.pow(-1,i+1)*(borderw+Math.random()*sw)
+		            box_y = Math.floor(gcheight/2) + Math.pow(-1,j+1)*(offset+Math.random()*(lh-offset))
+			}
+		        else
+			{
+		            box_y = Math.floor(gcheight/2) + Math.pow(-1,i+1)*(borderh+Math.random()*sh)
+		            box_x = Math.floor(gcwidth/2) + Math.pow(-1,j+1)*(offset+Math.random()*(lw-offset))
+			}
+		        // print(sw,sh,borderw+sw,borderh+sh,gcwidth,gcheight)
+		        // print((i,j),area_choice,box_x,box_y) 
+		        box_pos.push([box_x,box_y])
+		
+		        obs_x = Math.floor(gcwidth/2) + Math.pow(-1,i+1)*(offset2+Math.random()*(Math.floor(gcwidth/3)-offset-offset2))
+		        obs_y = Math.floor(gcheight/2) + Math.pow(-1,j+1)*(offset2+Math.random()*(Math.floor(gcwidth/3)-offset-offset2)) 
+		        obs_pos.push([obs_x,obs_y])
+		
+		}
+
+		for (let i = 0; i < 4; i++) {
+			let square = squares[i];
+			// square.style.width = squareSize + "px";
+			// square.style.height = squareSize + "px";
+			square.style.position = "absolute";
+			square.style.left = (box_pos[i][0]) - 35 + "px";
+			square.style.top = (box_pos[i][1]) - 35 + "px";
+			// square.style.left = (box_pos[i][0] * (gameContainer.offsetWidth - 2 * squareSize)) + "px";
+			// square.style.top = (box_pos[i][1] * (gameContainer.offsetHeight - 2 * squareSize)) + "px";
+			let areaBox = {
+				'left': (parseInt(square.style.left.replace(/px/, "")) - margin) ,
+				'right': (parseInt(square.style.left.replace(/px/, "")) + squareSize + margin) ,
+				'top': (parseInt(square.style.top.replace(/px/, "")) - margin) ,
+				'bottom': (parseInt(square.style.top.replace(/px/, "")) + squareSize + margin) 
+			}
+			console.log(square);
+			captchaBox.push(areaBox)
+		}
+		let brickSize = 70;
+		for(let i=0;i<4;i++){
+			let b = bricks[i]
+
+			b.style.position = "absolute";
+			b.style.left = (obs_pos[i][0]) - 35 + "px";
+			b.style.top = (obs_pos[i][1]) - 35 + "px";
+		
+			let brickBox = {
+				'left': (parseInt(b.style.left.replace(/px/, "")) ) + "px",
+				'right': (parseInt(b.style.left.replace(/px/, "")) + brickSize ) + "px",
+				'top': (parseInt(b.style.top.replace(/px/, "")) ) + "px",
+				'bottom': (parseInt(b.style.top.replace(/px/, "")) + brickSize ) + "px"
+			}
+			collisonBox.push(brickBox);
+		}
+		console.log(bricks)
+		captchaid = setInterval(checkSquare, 16);
+		// setTimeout(function () {
+		// 	location.reload();
+		// }, 10000);
+
+	</script>
+
+	<!-- <script src="{{ url_for('static', filename='js/index.js') }}"></script> -->
+</body>
+
+</html>
