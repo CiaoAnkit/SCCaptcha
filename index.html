@@ -172,9 +172,11 @@
 						// console.log(ball);
 						if(i==0){
 							alert("Captcha passed")
+							location.reload();
 						}
 						else{
 							alert("Captcha failed")
+							location.reload();
 						}
 						clearInterval(captchaid);
 
@@ -286,9 +288,9 @@
 		}
 		console.log(bricks)
 		captchaid = setInterval(checkSquare, 16);
-		// setTimeout(function () {
-		// 	location.reload();
-		// }, 10000);
+		setTimeout(function () {
+			location.reload();
+		}, 10000);
 
 	</script>
 
