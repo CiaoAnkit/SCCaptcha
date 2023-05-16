@@ -27,6 +27,12 @@
 		</div>
 	</div>
 	<script>
+		img_no = Math.floor(Math.random() * 5)
+		img_src = "pics/" + img_no + ".png"	
+		for(i=0;i<4;i++)
+		{
+			document.getElementById("img"+i).src = img_src;
+		}
 		gcwidth = 370
 		gcheight = 700
 		offset = 35
@@ -290,7 +296,7 @@
 		captchaid = setInterval(checkSquare, 16);
 		setTimeout(function () {
 			location.reload();
-		}, 10000);
+		}, 25000);
 
 	</script>
 
