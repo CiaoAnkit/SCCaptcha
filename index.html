@@ -27,6 +27,7 @@
 		</div>
 	</div>
 	<script>
+		alert("Tilt your device to move the red ball over the image that is the correct way up. You've 25 seconds");
 		img_no = Math.floor(Math.random() * 5)
 		img_src = "pics/" + img_no + ".png"	
 		for(i=0;i<4;i++)
@@ -294,7 +295,9 @@
 		}
 		console.log(bricks)
 		captchaid = setInterval(checkSquare, 16);
+
 		setTimeout(function () {
+			alert("Timeout! Reloading");
 			location.reload();
 		}, 25000);
 
