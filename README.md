@@ -191,3 +191,10 @@ def verify_path(path,user_id):
     return True
 ```
 
+### Why ReCaptcha
+For captchas like select the so called images in the grid below, there are certain problems. Nowadays we have plenty of computer vision models which can identify them and complete the captcha. Sometimes its not user friendly to older age groups, who have trouble identifying things, or not knowing what the object is.
+
+In ReCaptcha, the interface is user-friendly, you need to just know which image is in it's correct upright position, and tilt the device to guide the ball over it, which is playfully fun enough. 
+
+### How is it safer from attackers
+In the traditional captcha, its just enough for the ml models to recognise the image, once its recognised, the box is clicked and it's done. But here, in order, we need to build a model which detects whether the object is upright or not, once it's done it should get a path from the ball to the captcha box, paving it's way around the obstacles. These barriers make the automation of solving the captcha more difficult than the traditional ones. The upright detection model was chosen based on the study that there are certain class of images that are easy for humans to orient but harder for machines to orient (https://dl.acm.org/doi/10.1145/1526709.1526822). We will using images from this class for our tasks.
