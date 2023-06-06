@@ -198,3 +198,7 @@ In ReCaptcha, the interface is user-friendly, you need to just know which image 
 
 ### How is it safer from attackers
 In the traditional captcha, its just enough for the ml models to recognise the image, once its recognised, the box is clicked and it's done. But here, in order, we need to build a model which detects whether the object is upright or not, once it's done it should get a path from the ball to the captcha box, paving it's way around the obstacles. These barriers make the automation of solving the captcha more difficult than the traditional ones. The upright detection model was chosen based on the study that there are certain class of images that are easy for humans to orient but harder for machines to orient (https://dl.acm.org/doi/10.1145/1526709.1526822). We will using images from this class for our tasks.
+
+### Cons
+Since we are using Generic sensor api, it will only work on chromium based browsers and non-ios devices which have gyroscope sensors.
+Unlike other captchas tasks which mostly involves clicking the image, here the user has to put in more effort to pass the captcha.
