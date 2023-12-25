@@ -1,0 +1,4 @@
+.static/pics/temp/*
+*.key
+*.cert
+__pycache__/

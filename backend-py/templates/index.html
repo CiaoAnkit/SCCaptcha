@@ -14,10 +14,7 @@
 	<div id="gameContainer" height="{{gcheight}}px" width="{{gcwidth}}px">
 		<div id="ball"></div>
 		<div id="imgs">
-			<img id="img0" src="pics/tmp.png" alt="arrow" width="50px" height="50px">
-			<img id="img1" src="pics/tmp.png" alt="arrow" width="50px" height="50px" class="rotate90">
-			<img id="img2" src="pics/tmp.png" alt="arrow" width="50px" height="50px" class="rotate180">
-			<img id="img3" src="pics/tmp.png" alt="arrow" width="50px" height="50px" class="rotate270">
+			<img id="screen" src="pics/temp/{{user_id}}.png" alt="arrow" width="{{gcwidth}}px" height="{{gcheight}}px">
 		</div>
 		<div id="blocks">
 			<img id="block0" src="pics/tile.png" alt="arrow" width="70px" height="70px">
@@ -35,9 +32,9 @@
 		let path = [];
 		const ball = document.querySelector("#ball");
 		const gameContainer = document.querySelector("#gameContainer");
-
 		let accx = 0;
 		let accy = 0;
+		let accz = 0;
 		const squareSize = 20;
 		const tlimit = 1;
 		let brickWidth = 70;
@@ -51,15 +48,23 @@
 		let inSquare = [false, false, false, false]
 
 		if ('Accelerometer' in window) {
-			const acc = new Accelerometer({frequency: 60});
+
+			let gy = new Gyroscope({ frequency: 60 });
+			const acc = new Accelerometer({ frequency: 60 });
+			console.log('Accelerometer and Gyroscope supported');
+
 			acc.start();
 			let ae = acc.addEventListener('reading', async function moveBall(e) {
+
 				accx = acc.x;
 				accy = acc.y;
-				// console.log(x, y)
+
 				let ballLeft = ball.offsetLeft - accx * 5;
 				let ballTop = ball.offsetTop + accy * 5;
+				console.log(ballLeft, ballTop)
+				console.log(gameContainer.offsetWidth)
 				let f = false;
+				// collision with container handling
 				if (ballLeft <= 0 || ballLeft + ball.offsetWidth >= gameContainer.offsetWidth) {
 					if ((ballTop <= 0 || ballTop + ball.offsetHeight >= gameContainer.offsetHeight) && !f) {
 						return;
@@ -75,38 +80,41 @@
 					ball.style.left = ballLeft + "px";
 					f = true;
 				}
-				for (var i=0;i<4;i++){
+				//collision handling with bricks
+				for (var i = 0; i < 4; i++) {
 					b = bricks[i]
 
-					ballTop = ball.offsetTop ;
-					if(ballLeft + ball.offsetWidth > b.offsetLeft && ballLeft < b.offsetLeft+brickWidth &&
-					   ballTop + ball.offsetHeight > b.offsetTop && ballTop  < b.offsetTop+brickHeight) {
+					ballTop = ball.offsetTop;
+					if (ballLeft + ball.offsetWidth > b.offsetLeft && ballLeft < b.offsetLeft + brickWidth &&
+						ballTop + ball.offsetHeight > b.offsetTop && ballTop < b.offsetTop + brickHeight) {
 						// console.log(b);
-						ballLeft = ball.offsetLeft + acc.x ;
+						ballLeft = ball.offsetLeft + acc.x;
 						ball.style.left = ballLeft + "px";
 						f = true;
 						break;
-	
+
 					}
 					ballTop = ball.offsetTop + accy * 5;
 					ballLeft = ball.offsetLeft;
-					if(ballLeft + ball.offsetWidth > b.offsetLeft && ballLeft < b.offsetLeft+brickWidth &&
-					   ballTop + ball.offsetHeight > b.offsetTop && ballTop  < b.offsetTop+brickHeight) {
-						ballTop = ball.offsetTop - acc.y ;
+					if (ballLeft + ball.offsetWidth > b.offsetLeft && ballLeft < b.offsetLeft + brickWidth &&
+						ballTop + ball.offsetHeight > b.offsetTop && ballTop < b.offsetTop + brickHeight) {
+						ballTop = ball.offsetTop - acc.y;
 						ball.style.top = ballTop + "px";
 						f = true;
 						break;
-	
+
 					}
 					ballLeft = ball.offsetLeft - accx * 5;
 				}
 				if (!f) {
 					ball.style.left = ballLeft + "px";
 					ball.style.top = ballTop + "px";
+					// console.log("ball left top", ballLeft, ballTop)
 				}
+
 			});
 		} else {
-			console.error('Accelerometer not supported');
+			console.error('Accelerometer or Gryroscope not supported');
 		}
 
 		function responseHandler(data) {
@@ -117,135 +125,111 @@
 				// clearInterval(captchaid)
 				ball.style.left = 150;
 				ball.offsetTop = 150;
-				captchaid = setInterval(checkSquare, 16);
-				// location.reload();
-				// location.href = "https://iiit.ac.in"
+				captchaid = setInterval(checkSquare, 6);
+
+				window.location.href = "https://www.google.com"
 			}
 
 			else {
 				// alert("Captcha failed, try again")
 				// if (confirm("Captcha failed, try again")) {
-					// clearInterval(captchaid)
-					// location.reload();
+				// clearInterval(captchaid)
+				// location.reload();
 				// }
+
 				ball.style.left = 150;
 				ball.offsetTop = 150;
-				captchaid = setInterval(checkSquare, 16);
+				captchaid = setInterval(checkSquare, 6);
 			}
 
 
 		}
 
 		function checkSquare() {
-			let square;
-			let margin = squareSize;
-			for (let i = 0; i < 4; i++) {
-				let bool = ((ball.offsetLeft < captchaBox[i].right) && (ball.offsetLeft > captchaBox[i].left) && (ball.offsetTop < captchaBox[i].bottom) && (ball.offsetTop > captchaBox[i].top));
-				if (inSquare[i] == true) {
-					console.log("hit",i)
-					if (bool) {
-							time += 1;
-						}
-						else {
-							time = 0;
-							inSquare[i] = false;
-						}
-					// else {
-					// 	time = 0;
-					// 	inSquare[i] = false;
-					// }
+			// let square;
+			// let margin = squareSize;
+			// for (let i = 0; i < 4; i++) {
+			// 	let bool = ((ball.offsetLeft < captchaBox[i].right) && (ball.offsetLeft > captchaBox[i].left) && (ball.offsetTop < captchaBox[i].bottom) && (ball.offsetTop > captchaBox[i].top));
+			// 	if (inSquare[i] == true) {
+			// 		console.log("hit", i)
+			// 		if (bool) {
+			// 			time += 1;
+			// 		}
+			// 		else {
+			// 			time = 0;
+			// 			inSquare[i] = false;
+			// 		}
+			const requestOptions = {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({
+					// guess: i,
+					path: path
+				})
+			};
+			fetch("guess", requestOptions)
+				.then(response => response.json())
+				.then(data => responseHandler(data))
+				.catch(error => console.error('Error:', error));
+			// console.log(i, captchaBox[i]);
+			console.log(ball);
+			clearInterval(captchaid);
 
-					if (time > tlimit) {
-						const requestOptions = {
-							method: 'POST',
-							headers: {'Content-Type': 'application/json'},
-							body: JSON.stringify({guess: i, path: path})
-						};
-						fetch("guess", requestOptions)
-							.then(response => response.json())
-							.then(data => responseHandler(data))
-							.catch(error => console.error('Error:', error));
-						console.log(i,captchaBox[i]);
-						console.log(ball);
-						clearInterval(captchaid);
-
-					}
-				
-				}
-				else if (bool) {
-						inSquare[i] = true
-						console.log("box ",i);
-						time = 0
-					}
-				
-
-			}
 		}
 
+		// 	}
+		// 	else if (bool) {
+		// 		inSquare[i] = true
+		// 		console.log("box ", i);
+		// 		time = 0
+		// 	}
 
 
-		//place rotated images
+		// }
+
+
+		// box_pos = JSON.parse('{{ box_pos | tojson }}');
+		obs_pos = JSON.parse('{{ obs_pos | tojson }}');
 		// for (let i = 0; i < 4; i++) {
 		// 	let square = squares[i];
-		// 	// square.style.width = squareSize + "px";
-		// 	// square.style.height = squareSize + "px";
+
 		// 	square.style.position = "absolute";
-		// 	square.style.left = Math.floor(Math.random() * (gameContainer.offsetWidth - 2*squareSize)) + "px";
-		// 	square.style.top = Math.floor(Math.random() * (gameContainer.offsetHeight - 2*squareSize)) + "px";
+		// 	square.style.left = (box_pos[i][0]) - JSON.parse('{{ offset }}') + "px";
+		// 	square.style.top = (box_pos[i][1]) - - JSON.parse('{{ offset }}') + "px";
+
 		// 	let areaBox = {
-		// 		'left': (parseInt(square.style.left.replace(/px/,""))-margin)+"px",
-		// 		'right': (parseInt(square.style.left.replace(/px/,""))+squareSize+margin)+"px",
-		// 		'top': (parseInt(square.style.top.replace(/px/,""))-margin)+"px",
-		// 		'bottom': (parseInt(square.style.top.replace(/px/,""))+squareSize+margin)+"px"
+		// 		'left': (parseInt(square.style.left.replace(/px/, "")) - margin),
+		// 		'right': (parseInt(square.style.left.replace(/px/, "")) + squareSize + margin),
+		// 		'top': (parseInt(square.style.top.replace(/px/, "")) - margin),
+		// 		'bottom': (parseInt(square.style.top.replace(/px/, "")) + squareSize + margin)
 		// 	}
-		// 	console.log(areaBox)
+		// 	console.log(square);
 		// 	captchaBox.push(areaBox)
 		// }
-		////place rotated images
-		box_pos = {{box_pos | tojson}};
-		obs_pos = {{obs_pos | tojson}};
-		for (let i = 0; i < 4; i++) {
-			let square = squares[i];
-			// square.style.width = squareSize + "px";
-			// square.style.height = squareSize + "px";
-			square.style.position = "absolute";
-			square.style.left = (box_pos[i][0]) - {{offset}} + "px";
-			square.style.top = (box_pos[i][1]) - {{offset}} + "px";
-			// square.style.left = (box_pos[i][0] * (gameContainer.offsetWidth - 2 * squareSize)) + "px";
-			// square.style.top = (box_pos[i][1] * (gameContainer.offsetHeight - 2 * squareSize)) + "px";
-			let areaBox = {
-				'left': (parseInt(square.style.left.replace(/px/, "")) - margin) ,
-				'right': (parseInt(square.style.left.replace(/px/, "")) + squareSize + margin) ,
-				'top': (parseInt(square.style.top.replace(/px/, "")) - margin) ,
-				'bottom': (parseInt(square.style.top.replace(/px/, "")) + squareSize + margin) 
-			}
-			console.log(square);
-			captchaBox.push(areaBox)
-		}
 		let brickSize = 70;
-		for(let i=0;i<4;i++){
+		for (let i = 0; i < 4; i++) {
 			let b = bricks[i]
 
 			b.style.position = "absolute";
-			b.style.left = (obs_pos[i][0]) - {{offset}} + "px";
-			b.style.top = (obs_pos[i][1]) - {{offset}} + "px";
-		
+			b.style.left = (obs_pos[i][0]) - JSON.parse('{{ offset }}') + "px";
+			b.style.top = (obs_pos[i][1]) - JSON.parse('{{ offset }}') + "px";
+
 			let brickBox = {
-				'left': (parseInt(b.style.left.replace(/px/, "")) ) + "px",
-				'right': (parseInt(b.style.left.replace(/px/, "")) + brickSize ) + "px",
-				'top': (parseInt(b.style.top.replace(/px/, "")) ) + "px",
-				'bottom': (parseInt(b.style.top.replace(/px/, "")) + brickSize ) + "px"
+				'left': (parseInt(b.style.left.replace(/px/, ""))) + "px",
+				'right': (parseInt(b.style.left.replace(/px/, "")) + brickSize) + "px",
+				'top': (parseInt(b.style.top.replace(/px/, ""))) + "px",
+				'bottom': (parseInt(b.style.top.replace(/px/, "")) + brickSize) + "px"
 			}
 			collisonBox.push(brickBox);
 		}
 		console.log(bricks)
-		captchaid = setInterval(checkSquare, 16);
+		captchaid = setInterval(checkSquare, 3);
 		setTimeout(function () {
-		 	location.reload();
-		}, 10000);
-		setInterval(function(){
-			path.append([(parseInt(ball.style.left.replace(/px/, "")) ),(parseInt(ball.style.top.replace(/px/, "")) )])
-		}, 62)
+			location.reload();
+		}, 60000);
+		setInterval(function () {
+			path.push([(parseFloat(ball.style.left.replace(/px/, ""))), (parseFloat(ball.style.top.replace(/px/, "")))])
+		}, 100)
 
 	</script>
 
