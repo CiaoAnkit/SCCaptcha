@@ -26,13 +26,12 @@ def delete_img():
     deletes all the files dates more than 2 minutes ago every time process starts
     '''
     now = time.time()
-    folder = './pics/temp'
+    folder = './static/pics/temp'
 
     files = [os.path.join(folder, filename) for filename in os.listdir(folder)]
     for filename in files:
         if (now - os.stat(filename).st_mtime) > 120:  # 2minutes
-            command = "rm {0}".format(filename)
-            os.subprocess.call(command, shell=True)
+            os.remove(filename)
     return True
     
 
@@ -122,7 +121,7 @@ def start():
     Generate the image box_positions, at random locations.
     Generate obstacles (obs) between image box and origin
     '''
-    delete_img
+    delete_img()
     user_id = uuid.uuid1().int
     user_data[user_id] = {}
     img_id = random.randint(0, 1)
@@ -189,9 +188,9 @@ def guess():
     path = request.json['path'][1:]
     
     # check if the end point is in which cat, 5 means no end point
-    if path :
+    if len(path) > 2:
         end_point = path[-1]
-        guess = ans if check_endpoint(end_point, user_data[user_id]['boundary']) else 5
+        guess = ans if (end_point[0] is not None and check_endpoint(end_point, user_data[user_id]['boundary'])) else 5
     else :
         guess = 5
     
