@@ -36,14 +36,11 @@
 		let accy = 0;
 		let accz = 0;
 		const squareSize = 20;
-		const tlimit = 1;
+		const tlimit = 3;
 		let brickWidth = 70;
 		let brickHeight = 70;
 		let margin = 10;
 		let time = 0
-		// let squares = document.getElementById("imgs").children
-		// let captchaBox = []
-		// let captchaDone = false
 		let captchaid = 0
 		let inSquare = [false, false, false, false]
 
@@ -159,21 +156,25 @@
 			// 			time = 0;
 			// 			inSquare[i] = false;
 			// 		}
-			const requestOptions = {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({
-					// guess: i,
-					path: path
-				})
-			};
-			fetch("guess", requestOptions)
-				.then(response => response.json())
-				.then(data => responseHandler(data))
-				.catch(error => console.error('Error:', error));
-			// console.log(i, captchaBox[i]);
-			console.log(ball);
-			clearInterval(captchaid);
+			time += 0.1
+			if (time > tlimit) {
+				const requestOptions = {
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({
+						// guess: i,
+						path: path
+					})
+				};
+				fetch("guess", requestOptions)
+					.then(response => response.json())
+					.then(data => responseHandler(data))
+					.catch(error => console.error('Error:', error));
+				// console.log(i, captchaBox[i]);
+				time = 0;
+				console.log(ball);
+				clearInterval(captchaid);
+			}
 
 		}
 

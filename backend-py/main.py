@@ -8,13 +8,16 @@ from PIL import Image
 from flask import Flask, render_template, session, request, jsonify, redirect , url_for
 from matplotlib import pyplot as plt
 from PIL import Image
+from itertools import product
+from colorama import Fore, Back, Style
+
 
 MAX_SPEED = 5
 GC_WIDTH = 370
 GC_HEIGHT = 700
 SQUARE_SIZE = 40 
 THRESHOLD = 50
-offset = 35
+offset = 40
 offset2 = 80
 app = Flask(__name__,static_folder='static',static_url_path='')
 app.secret_key = 'secretkey'
@@ -36,13 +39,13 @@ def delete_img():
     
 
 
-def render_img(img_id, box_pos, ans, user_id, offset=35, squareSize=20, margin=20):
+def render_img(img_id, box_pos, ans, user_id, offset=35, squareSize=20, margin=20, gcwidth=380, gcheight=700):
 
     img1 = Image.open(f"./static/pics/{img_id}.png")
     newsize = (50,50)
     img1 = img1.resize(newsize)
     image1copy = img1.copy()
-    img2 = Image.new('RGBA', (380, 700), (255, 0, 0, 0))
+    img2 = Image.new('RGBA', (gcwidth, gcheight), (255, 0, 0, 0))
     image2copy = img2.copy()
     angle = 90
     for i in range(len(box_pos)):
@@ -113,6 +116,21 @@ def get_area(x,y, margin = 20, squareSize = 20):
     }
     return ans
 
+def get_box_coordinates(sw,sh,lw,lh,borderw, borderh,i,j):
+    area_choice=random.choices([0,1,2],weights=[sh*sw,(lh-offset)*sw,(lw-offset)*sh])
+    box_x=0
+    box_y=0
+    if area_choice[0]==0:
+        box_x =  GC_WIDTH//2 + pow(-1,i+1)*random.randint(borderw,borderw+sw)
+        box_y =  GC_HEIGHT//2 + pow(-1,j+1)*random.randint(borderh,borderh+sh)
+    elif area_choice[0]==1:
+        box_x = GC_WIDTH//2 + pow(-1,i+1)*random.randint(borderw,borderw+sw)
+        box_y = GC_HEIGHT//2 + pow(-1,j+1)*random.randint(offset,lh)
+    else:
+        box_x = GC_WIDTH//2 + pow(-1,i+1)*random.randint(offset,lw)
+        box_y = GC_HEIGHT//2 + pow(-1,j+1)*random.randint(borderh,borderh+sh)
+    return box_x, box_y
+
 @app.route('/', methods=['GET'])
 def start():
     '''
@@ -135,6 +153,8 @@ def start():
     box_pos = []
     obs_pos = []
     area_box = []
+    #distance needed between obstacle and box, 60*(2^0.5) is needed for perfect non overlap
+    obstacle_ball_offset = 85  
     for i, j in [(i,j) for i in [0,1] for j in [0,1]]:
         '''
         Select position from the L shape region
@@ -145,36 +165,25 @@ def start():
         lw = GC_WIDTH//2 - offset
         borderw = GC_WIDTH//2 -offset -sw
         borderh = GC_HEIGHT//2 - offset -sh
-        area_choice=random.choices([0,1,2],weights=[sh*sw,(lh-offset)*sw,(lw-offset)*sh])
-        box_x=0
-        box_y=0
-        if area_choice[0]==0:
-            box_x =  GC_WIDTH//2 + pow(-1,i+1)*random.randint(borderw,borderw+sw)
-            box_y =  GC_HEIGHT//2 + pow(-1,j+1)*random.randint(borderh,borderh+sh)
-        elif area_choice[0]==1:
-            box_x = GC_WIDTH//2 + pow(-1,i+1)*random.randint(borderw,borderw+sw)
-            box_y = GC_HEIGHT//2 + pow(-1,j+1)*random.randint(offset,lh)
-        else:
-            box_x = GC_WIDTH//2 + pow(-1,i+1)*random.randint(offset,lw)
-            box_y = GC_HEIGHT//2 + pow(-1,j+1)*random.randint(borderh,borderh+sh)
-        # box_x = GC_WIDTH//2 + pow(-1,i+1)*random.randint(offset,lw)
-        # box_y = GC_HEIGHT - offset
-        # print(sw,sh,borderw+sw,borderh+sh,GC_WIDTH,GC_HEIGHT)
-        # print((i,j),area_choice,box_x,box_y) 
-        box_pos.append((box_x,box_y))
-        print(box_x, box_y)
+        box_x, box_y = get_box_coordinates(sw,sh,lw,lh,borderw,borderh,i,j)
 
         obs_x = GC_WIDTH//2 +  pow(-1,i+1)*random.randint( offset2, GC_WIDTH//3  - offset)
         obs_y = GC_HEIGHT//2 + pow(-1,j+1)*random.randint( offset2, GC_WIDTH//3  - offset)
+
+        while dist((obs_x,obs_y),(box_x,box_y)) < obstacle_ball_offset:
+            print(Fore.GREEN,"Box in obstacle", obs_x, obs_y, box_x, box_y)
+            print("Regenerating box coordinates")
+            box_x, box_y = get_box_coordinates(sw,sh,lw,lh,borderw,borderh,i,j)
+            
+        
+        box_pos.append((box_x,box_y))
         obs_pos.append((obs_x,obs_y))
-        print(obs_x, obs_y)
-        # obstacle_pos.append(( offset + random.randint(i*(GC_WIDTH//2),  (i+1)*(GC_WIDTH)),
-        #                 ( offset + random.randint(j*(GC_HEIGHT//2),  (j+1)*(GC_HEIGHT))) ))
         area_box.append(get_area(box_x, box_y))
+
     user_data[user_id]['obs'] = obs_pos
     user_data[user_id]['captcha_box'] = box_pos 
     user_data[user_id]['boundary'] = area_box
-    # print("user data is ", user_data)
+
     render_img(img_id, box_pos, ans, user_id)
     return render_template('index.html',user_id =user_id, offset=offset,offset2=offset2,gcheight = GC_HEIGHT,gcwidth=GC_WIDTH,box_pos=box_pos,obs_pos=obs_pos)
 
