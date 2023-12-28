@@ -117,7 +117,14 @@
 		function responseHandler(data) {
 			console.log(data);
 			if (data['bool'] == "true") {
+				// to handle obstacle logic
+				// if (data['ans'] == 5) {
+				// 	ball.style.left = 150;
+				// 	ball.offsetTop = 150;
+				// 	captchaid = setInterval(checkSquare, 6);
+				// }
 
+				// else {
 				alert("Captcha passed")
 				// clearInterval(captchaid)
 				ball.style.left = 150;
@@ -125,6 +132,7 @@
 				captchaid = setInterval(checkSquare, 6);
 
 				window.location.href = "https://www.google.com"
+
 			}
 
 			else {
@@ -227,10 +235,10 @@
 		captchaid = setInterval(checkSquare, 3);
 		setTimeout(function () {
 			location.reload();
-		}, 60000);
+		}, 25000);
 		setInterval(function () {
 			path.push([(parseFloat(ball.style.left.replace(/px/, ""))), (parseFloat(ball.style.top.replace(/px/, "")))])
-		}, 100)
+		}, 62)
 
 	</script>
 

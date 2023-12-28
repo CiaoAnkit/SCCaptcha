@@ -93,19 +93,19 @@ def verify_path(path,user_id):
     prevpoint = path[1]
     for i in range(2,pathlen):
         # print("path[i]",path[i])
-        for corner in obs:
-            if inbox(path[i],corner):
-                print("In obstacle", path[i], corner)
-                return False
+        # for corner in obs:
+        #     if inbox(path[i],corner):
+        #         print("Hit obstacle", path[i], corner)
+        #         return 3
         dist_trav = dist(prevpoint,path[i])
         if dist_trav > THRESHOLD:
             print("Distance too long", dist_trav)
-            return False
+            return 0
         prevpoint = path[i]
     if not inbox(path[-1],captcha_box):
         print("Not in box", path[-1], captcha_box)
-        return False
-    return True
+        return 0
+    return 1
 
 def get_area(x,y, margin = 20, squareSize = 20):
     ans = {
@@ -210,12 +210,17 @@ def guess():
         }
     elif guess == ans:
         # print("path is ", path)
-        if verify_path(path,user_id):
+        if verify_path(path,user_id)==1:
             response = {
                 'bool': 'true',
                 'ans': ans
                 
             }
+        # elif verify_path(path,user_id)==3:
+        #     response = {
+        #         'bool': 'true',
+        #         'ans': 5,
+        #     }
         else:
             response = {
                     'bool': 'false',
