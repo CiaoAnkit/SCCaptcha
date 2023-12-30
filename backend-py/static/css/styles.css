@@ -1,6 +1,6 @@
 #gameContainer {
-  width: 380px;
-  height: 700px;
+  width: 100vw;
+  height: 100vh;
   position: absolute;
   top: 0px;
   left: 0px;
@@ -13,8 +13,8 @@
   background-color: red;
   border-radius: 25px;
   position: absolute;
-  left: 165px;
-  top: 325px;
+  left: 50vw;
+  top: 50vh;
 }
 
 .rotate90 {

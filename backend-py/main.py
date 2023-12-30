@@ -13,10 +13,8 @@ from colorama import Fore, Back, Style
 
 
 MAX_SPEED = 5
-GC_WIDTH = 370
-GC_HEIGHT = 700
 SQUARE_SIZE = 40 
-THRESHOLD = 50
+THRESHOLD = 60
 offset = 40
 offset2 = 80
 app = Flask(__name__,static_folder='static',static_url_path='')
@@ -39,7 +37,7 @@ def delete_img():
     
 
 
-def render_img(img_id, box_pos, ans, user_id, offset=35, squareSize=20, margin=20, gcwidth=380, gcheight=700):
+def render_img(img_id, box_pos, ans, user_id, gcwidth, gcheight):
 
     img1 = Image.open(f"./static/pics/{img_id}.png")
     newsize = (50,50)
@@ -116,7 +114,7 @@ def get_area(x,y, margin = 20, squareSize = 20):
     }
     return ans
 
-def get_box_coordinates(sw,sh,lw,lh,borderw, borderh,i,j):
+def get_box_coordinates(sw,sh,lw,lh,borderw, borderh,i,j, GC_WIDTH, GC_HEIGHT):
     area_choice=random.choices([0,1,2],weights=[sh*sw,(lh-offset)*sw,(lw-offset)*sh])
     box_x=0
     box_y=0
@@ -131,7 +129,12 @@ def get_box_coordinates(sw,sh,lw,lh,borderw, borderh,i,j):
         box_y = GC_HEIGHT//2 + pow(-1,j+1)*random.randint(borderh,borderh+sh)
     return box_x, box_y
 
-@app.route('/', methods=['GET'])
+@app.route('/', methods = ['GET'])
+def landing_page():
+    user_id = uuid.uuid1().int
+    return render_template('index.html', user_id = user_id)
+
+@app.route('/puzzle', methods=['POST', 'GET'])
 def start():
     '''
     Register the user, give an id
@@ -139,8 +142,14 @@ def start():
     Generate the image box_positions, at random locations.
     Generate obstacles (obs) between image box and origin
     '''
+    
+    GC_HEIGHT = int(request.args['gc_height']) if 'gc_height' in request.args else 700
+    GC_WIDTH = int(request.args['gc_width']) if 'gc_width' in request.args else 380
+    user_id = int(request.args['user_id']) if 'user_id' in request.args else 400
+
+    print(GC_HEIGHT, GC_WIDTH)
+
     delete_img()
-    user_id = uuid.uuid1().int
     user_data[user_id] = {}
     img_id = random.randint(0, 1)
     rotate_90_by = random.randint(0,3)
@@ -165,15 +174,15 @@ def start():
         lw = GC_WIDTH//2 - offset
         borderw = GC_WIDTH//2 -offset -sw
         borderh = GC_HEIGHT//2 - offset -sh
-        box_x, box_y = get_box_coordinates(sw,sh,lw,lh,borderw,borderh,i,j)
+        box_x, box_y = get_box_coordinates(sw,sh,lw,lh,borderw,borderh,i,j, GC_WIDTH, GC_HEIGHT)
 
         obs_x = GC_WIDTH//2 +  pow(-1,i+1)*random.randint( offset2, GC_WIDTH//3  - offset)
-        obs_y = GC_HEIGHT//2 + pow(-1,j+1)*random.randint( offset2, GC_WIDTH//3  - offset)
+        obs_y = GC_HEIGHT//2 + pow(-1,j+1)*random.randint( offset2, GC_HEIGHT//3  - offset)
 
         while dist((obs_x,obs_y),(box_x,box_y)) < obstacle_ball_offset:
             print(Fore.GREEN,"Box in obstacle", obs_x, obs_y, box_x, box_y)
             print("Regenerating box coordinates")
-            box_x, box_y = get_box_coordinates(sw,sh,lw,lh,borderw,borderh,i,j)
+            box_x, box_y = get_box_coordinates(sw,sh,lw,lh,borderw,borderh,i,j, GC_WIDTH, GC_HEIGHT)
             
         
         box_pos.append((box_x,box_y))
@@ -184,10 +193,18 @@ def start():
     user_data[user_id]['captcha_box'] = box_pos 
     user_data[user_id]['boundary'] = area_box
 
-    render_img(img_id, box_pos, ans, user_id)
-    return render_template('index.html',user_id =user_id, offset=offset,offset2=offset2,gcheight = GC_HEIGHT,gcwidth=GC_WIDTH,box_pos=box_pos,obs_pos=obs_pos)
+    render_img(img_id, box_pos, ans, user_id, GC_WIDTH, GC_HEIGHT)
+    print("user_id being send is", user_id)
+    return render_template('puzzle.html', user_id =user_id, offset=offset, offset2=offset2, gcheight = GC_HEIGHT, gcwidth=GC_WIDTH, box_pos=box_pos,obs_pos=obs_pos)
 
 
+@app.route('/coordinates', methods=['POST'])
+def coordinates():
+    data = request.json
+    GC_WIDTH = data.get('gc_width')
+    GC_HEIGHT = data.get('gc_height')
+    user_id = int(data.get('user_id'))
+    return redirect(f'/puzzle?gc_width={GC_WIDTH}&gc_height={GC_HEIGHT}&user_id={user_id}')
 
 
 @app.route('/guess', methods=['POST'])
@@ -238,6 +255,7 @@ def guess():
     return jsonify(response)
 
 if __name__ == '__main__':
+    delete_img()
     app.run(host="0.0.0.0",debug=True,ssl_context=("ssl.cert", "ssl.key"))
 
 
