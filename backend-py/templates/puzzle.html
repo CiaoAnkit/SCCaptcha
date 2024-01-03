@@ -117,32 +117,29 @@
 		}
 
 		function responseHandler(data) {
-			console.log(data);
+			// console.log(data);
 			if (data['bool'] == "true") {
 				// to handle obstacle logic
-				// if (data['ans'] == 5) {
-				// 	ball.style.left = 150;
-				// 	ball.offsetTop = 150;
-				// 	captchaid = setInterval(checkSquare, 6);
-				// }
+				if (data['ans'] == 6) {
+					alert("Captcha failed, try again")
+					// redirect to index.html
+					window.location.href = "https://{{request.host}}/home"
+				}
 
-				// else {
-				alert("Captcha passed")
-				// clearInterval(captchaid)
-				ball.style.left = 150;
-				ball.offsetTop = 150;
-				captchaid = setInterval(checkSquare, 6);
+				else {
+					alert("Captcha passed")
+					window.location.href = "https://www.google.com"
 
-				window.location.href = "https://www.google.com"
+					// clearInterval(captchaid)
+					ball.style.left = 150;
+					ball.offsetTop = 150;
+					captchaid = setInterval(checkSquare, 6);
+
+				}
 
 			}
 
 			else {
-				// alert("Captcha failed, try again")
-				// if (confirm("Captcha failed, try again")) {
-				// clearInterval(captchaid)
-				// location.reload();
-				// }
 
 				ball.style.left = 150;
 				ball.offsetTop = 150;

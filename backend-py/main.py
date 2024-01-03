@@ -60,11 +60,12 @@ def render_img(img_id, box_pos, ans, user_id, gcwidth, gcheight):
 
 def check_endpoint(final_point, boundary):
     x,y = final_point
-    for i in range(4):
-        if x < boundary[i]['right'] and x > boundary[i]['left'] and y < boundary[i]['bottom'] and y > boundary[i]['top']:
-            print(i, "is the guess")
-            return True
-    return False
+    if x is not None and y is not None:
+        for i in range(4):
+            if x < boundary[i]['right'] and x > boundary[i]['left'] and y < boundary[i]['bottom'] and y > boundary[i]['top']:
+                print(i, "is the guess")
+                return True, i
+    return False, 5
 
     
 def dist(a, b):
@@ -130,6 +131,10 @@ def get_box_coordinates(sw,sh,lw,lh,borderw, borderh,i,j, GC_WIDTH, GC_HEIGHT):
     return box_x, box_y
 
 @app.route('/', methods = ['GET'])
+def main():
+    return redirect('home')
+
+@app.route('/home', methods = ['GET'])
 def landing_page():
     user_id = uuid.uuid1().int
     return render_template('index.html', user_id = user_id)
@@ -216,16 +221,20 @@ def guess():
     # check if the end point is in which cat, 5 means no end point
     if len(path) > 2:
         end_point = path[-1]
-        guess = ans if (end_point[0] is not None and check_endpoint(end_point, user_data[user_id]['boundary'])) else 5
+        if end_point[0] is not None :
+            result, guess = check_endpoint(end_point, user_data[user_id]['boundary'])
+            print(result)
+        else :
+            result, guess = False, 5
     else :
+        result = False
         guess = 5
-    
 
     if ans is None:
         response = {
             'message': 'Please start a new game before guessing.',
         }
-    elif guess == ans:
+    elif guess == ans and result:
         # print("path is ", path)
         if verify_path(path,user_id)==1:
             response = {
@@ -233,25 +242,24 @@ def guess():
                 'ans': ans
                 
             }
-        # elif verify_path(path,user_id)==3:
-        #     response = {
-        #         'bool': 'true',
-        #         'ans': 5,
-        #     }
         else:
             response = {
                     'bool': 'false',
                     'ans': ans
             }
-        # print("output of guess, ans, rotate")
-        # print(guess,ans, user_data.get(user_id).get('rotate'))
     else:
-        response = {
-            'bool': 'false',
-            'ans': ans
-        }
-        # print("output of guess, ans, rotate")
-        # print(guess,ans, user_data.get(user_id).get('rotate'))
+        print(result)
+        if result:
+            print("reached wrong destination")
+            response = {
+                'bool': 'true',
+                'ans': 6
+            }
+        else :
+            response = {
+                'bool': 'false',
+                'ans': ans
+            }
     return jsonify(response)
 
 if __name__ == '__main__':
