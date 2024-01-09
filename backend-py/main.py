@@ -6,8 +6,6 @@ import time
 
 from PIL import Image
 from flask import Flask, render_template, session, request, jsonify, redirect , url_for
-from matplotlib import pyplot as plt
-from PIL import Image
 from itertools import product
 from colorama import Fore, Back, Style
 
