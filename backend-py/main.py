@@ -14,7 +14,7 @@ from colorama import Fore, Back, Style
 
 MAX_SPEED = 5
 SQUARE_SIZE = 40 
-THRESHOLD = 60
+THRESHOLD = 75
 offset = 40
 offset2 = 80
 app = Flask(__name__,static_folder='static',static_url_path='')
@@ -67,7 +67,11 @@ def check_endpoint(final_point, boundary):
                 return True, i
     return False, 5
 
-    
+def test_dist(a,b,path):
+    if a[0] is None or b[0] is None or a[1] is None or b[1] is None:
+        print(path)   
+    return math.sqrt((a[0]-b[0])**2 + (a[1]-b[1])**2) #has a problem TypeError: unsupported operand type(s) for -: 'NoneType' and 'int'
+
 def dist(a, b):
     return math.sqrt((a[0]-b[0])**2 + (a[1]-b[1])**2) #has a problem TypeError: unsupported operand type(s) for -: 'NoneType' and 'int'
 
@@ -90,13 +94,18 @@ def verify_path(path,user_id):
         print("Path too short")
         return False
     prevpoint = path[1]
+    counter = 0  #to check how many points in path are None
     for i in range(2,pathlen):
         # print("path[i]",path[i])
         # for corner in obs:
         #     if inbox(path[i],corner):
         #         print("Hit obstacle", path[i], corner)
         #         return 3
-        dist_trav = dist(prevpoint,path[i])
+        if None in prevpoint or None in path[i]:
+            dist_trav = 0
+            counter+=1
+        else:
+            dist_trav = test_dist(prevpoint,path[i], path)
         if dist_trav > THRESHOLD:
             print("Distance too long", dist_trav)
             return 0
@@ -104,9 +113,13 @@ def verify_path(path,user_id):
     if not inbox(path[-1],captcha_box):
         print("Not in box", path[-1], captcha_box)
         return 0
+    if counter > len(path)/3:
+        return 0
     return 1
 
-def get_area(x,y, margin = 20, squareSize = 20):
+def get_area(x,y, img_id, margin = 20, squareSize = 20):
+    if img_id:
+        squareSize = 30
     ans = {
         'left': x - offset - margin,
         'right': x - offset + squareSize + margin,
@@ -149,6 +162,7 @@ def start():
     '''
     
     GC_HEIGHT = int(request.args['gc_height']) if 'gc_height' in request.args else 700
+    GC_HEIGHT -=10
     GC_WIDTH = int(request.args['gc_width']) if 'gc_width' in request.args else 380
     user_id = int(request.args['user_id']) if 'user_id' in request.args else 400
 
@@ -192,7 +206,7 @@ def start():
         
         box_pos.append((box_x,box_y))
         obs_pos.append((obs_x,obs_y))
-        area_box.append(get_area(box_x, box_y))
+        area_box.append(get_area(box_x, box_y,img_id))
 
     user_data[user_id]['obs'] = obs_pos
     user_data[user_id]['captcha_box'] = box_pos 
@@ -223,7 +237,7 @@ def guess():
         end_point = path[-1]
         if end_point[0] is not None :
             result, guess = check_endpoint(end_point, user_data[user_id]['boundary'])
-            print(result)
+            print("guess and result : ", guess,result )
         else :
             result, guess = False, 5
     else :
@@ -248,7 +262,7 @@ def guess():
                     'ans': ans
             }
     else:
-        print(result)
+        # print(result)
         if result:
             print("reached wrong destination")
             response = {
