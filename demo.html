@@ -149,10 +149,12 @@
             function getTask(){
                 if(possible_tasks.length>0){
                     var item = possible_tasks[Math.floor(Math.random()*possible_tasks.length)];
-                    window.location.replace("/task/" + item + ".html");
+                    window.location.replace("./task/" + item + ".html");
+                    //you can maybe push one more task as same as above and when its game, 
+                    //need to integrate backend thodasa. 
                 }
                 else{
-                    window.location.replace("/task/fallback.html")
+                    window.location.replace("./task/fallback.html")
                 }
             }
     </script>

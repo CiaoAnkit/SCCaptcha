@@ -1,0 +1,7 @@
+pyproject.toml
+ReCaptcha.egg-info/PKG-INFO
+ReCaptcha.egg-info/SOURCES.txt
+ReCaptcha.egg-info/dependency_links.txt
+ReCaptcha.egg-info/requires.txt
+ReCaptcha.egg-info/top_level.txt
+flaskr/main.py

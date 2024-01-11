@@ -43,7 +43,7 @@ python main.py
 |Safari on iOS* | 3.2 - 17.3: | ❌|
 |Samsung Internet | 9.2 - 23: | &#x2705;
 |Opera Mobile* | 73: | &#x2705;
-|UC Browser for Android | 15.5: |&#xFFFD;|
+|UC Browser for Android | 15.5: | &#xFFFD;|
 |Android Browser* | 120: | &#x2705;
 |Firefox for Android| 119 | ❌|
 
