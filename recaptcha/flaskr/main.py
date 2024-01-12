@@ -9,14 +9,14 @@ from colorama import Fore, Back, Style
 from random import choice, randint
 
 from image_handler import delete_img, render_img, get_img_name
-from helper import test_dist, dist
+from helper import test_dist, dist, dump_data, get_min_points
 from coordinate_handler import check_endpoint, inbox, get_area, get_box_coordinates
 from path_behaviour import behaviour
 
 
 MAX_SPEED = 5
 SQUARE_SIZE = 40 
-THRESHOLD = 75
+THRESHOLD = 130
 offset = 40
 offset2 = 80
 img_first = 0
@@ -60,7 +60,7 @@ def ball_obs_overlap(path, user_id):
 
 
 
-def check_for_obstacle(prevpoint, path):
+def check_for_jumps(prevpoint, path):
     pathlen = len(path)
     counter = 0
     for i in range(2,pathlen):
@@ -73,7 +73,6 @@ def check_for_obstacle(prevpoint, path):
                 return 3
         '''
         if None in prevpoint or None in path[i]:
-            #remove point from path
             dist_trav = 0
             counter+=1
         else:
@@ -85,35 +84,37 @@ def check_for_obstacle(prevpoint, path):
     return counter, 1
 
 
-def verify_path(path,user_id):
+def verify_path(path,user_id, GC_HEIGHT, GC_WIDTH):
     '''
     Verify if the path is valid
     '''
     obs = user_data[user_id]['obs']
     captcha_box = user_data[user_id]['captcha_box'][user_data[user_id]['ans']]
     pathlen = len(path)
-    if pathlen <= 2:
-        print("Path too short")
-        return False
+    MIN_POINTS = get_min_points(GC_WIDTH, GC_HEIGHT, captcha_box)
+    if pathlen <= MIN_POINTS:
+        message = "Path too short"
+        return False, message
     prevpoint = path[1]
-    
+    counter, obs_check = check_for_jumps(prevpoint, path)
     if ball_obs_overlap(path,user_id):
-        print("Ball passed through obstacle")
-        return 0
-    counter, obs_check = check_for_obstacle(prevpoint, path)
-
+        message = "Ball passed through obstacle"
+        return 0, message
     if not inbox(path[-1],captcha_box):
         print("Not in box", path[-1], captcha_box)
-        return 0
+        message = "Not in box"
+        return 0, message
     if counter > len(path)/3:
-        print("Too many null values")
-        return 0
+        message = "Too many null values"
+        return 0, message
     if not obs_check:
-        return 0
+        message = "Too many jumps in path"
+        return 0, message
     if behaviour(path):
-        return 0
+        message = "Robot like behaviour"
+        return 0, message
     
-    return 1
+    return 1, "Valid path"
 
 
 
@@ -195,6 +196,8 @@ def start():
     user_data[user_id]['captcha_box'] = box_pos 
     user_data[user_id]['boundary'] = area_box
     user_data[user_id]['obstacle_coords'] = get_obs_areas
+    user_data[user_id]['gc_height'] = GC_HEIGHT
+    user_data[user_id]['gc_width'] = GC_WIDTH
 
     render_img(img_id, box_pos, ans, user_id, GC_WIDTH, GC_HEIGHT, img_first, img_last)
     print("user_id being send is", user_id)
@@ -216,7 +219,8 @@ def guess():
     user_id = session.get('user_id')
     ans = user_data.get(user_id).get('ans')
     path = request.json['path'][1:]
-    
+    gc_height = user_data.get(user_id).get('gc_height')
+    gc_width = user_data.get(user_id).get('gc_width')
     # check if the end point is in which cat, 5 means no end point
     if len(path) > 2:
         end_point = path[-1]
@@ -235,35 +239,28 @@ def guess():
         }
     elif guess == ans and result:
         # print("path is ", path)
-        if verify_path(path,user_id)==1:
+        val, message = verify_path(path,user_id, gc_height, gc_width)
+        print(message)
+        if val==1:
             response = {
                 'bool': 'true',
-                'ans': ans
-                
+                'ans': ans,                
             }
-            if dump_flag:
-                data_to_append = {"status": True, "path": path}
-                with open(file_path, 'a') as file:
-                    json.dump(data_to_append, file)
-                    file.write(',\n')
+            dump_data("True", path, file_path, dump_flag)
         else:
             response = {
                     'bool': 'false',
-                    'ans': ans
+                    'ans': ans,
+                    'message': message
             }
     else:
-        # print(result)
+        print("Reached wrong desination")
         if result:
-            print("reached wrong destination")
             response = {
                 'bool': 'true',
-                'ans': 6
+                'ans': 6,
             }
-            if dump_flag:
-                data_to_append = {"status": False, "path": path}
-                with open(file_path, 'a') as file:
-                    json.dump(data_to_append, file)
-                    file.write(',\n')
+            dump_data("False", path, file_path, dump_flag)
         else :
             response = {
                 'bool': 'false',

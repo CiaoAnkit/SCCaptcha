@@ -37,7 +37,7 @@ def calculate_rmse_for_interval(path, interval):
 
 
 
-def behaviour(path, INTERVALS_THRESHOLD = 0.5, MEAN_THRESHOLD = 1.5):
+def behaviour(path, INTERVALS_THRESHOLD = 0.5, MEAN_THRESHOLD = 1.4):
     interval = 10
     x_values, y_values = zip(*path)
     rmse_values = calculate_rmse_for_interval(path, interval)

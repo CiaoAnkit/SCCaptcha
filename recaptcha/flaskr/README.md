@@ -21,9 +21,19 @@ python main.py
 | POST   | /guess           | - Works to get the path of the user<br>- Verifies the path and answer<br>- Returns the result | guess() |
 
 
+## Files - Functions
+| File | Description                                                  |
+|----------|--------------------------------------------------------------|
+| main.py | - Contains all the routes and calls all the needed verifications for the captcha <br>  - has verification functions of jumps and ball passing through obstacle|
+| helper.py | - Contains all the helper functions for the captcha for distance, dumping data, getting_min_points needed for verfication|
+|coordinate_handler.py| - Contains all the functions for handling coordinates of the obstacle, box and the ball|
+|image_handler.py| - Contains all the functions for handling images like creatig, deleting, naming|
+|path_behaviour.py| - Contains all the functions for handling the path of the ball to differentiate between humans and robots using RMSE|
+|path_analysis.py | - Analyse the path such the parameters can be tuned &  paths can be compared, independent of the backend|
+
 ## Functions
 
-`box or images refers to images of animals, obs refers to obstacles`s
+`box or images refers to images of animals, obs refers to obstacles, few functions are not mentioned here as they are self explanatory`
 | Function | Description                                                  |
 |----------|--------------------------------------------------------------|
 | delete_img() | - Deletes database images which are older than few minutes|
@@ -34,6 +44,10 @@ python main.py
 | verify_path() | Verifies the path <br> - based on path length <br> - distance between points and endpoint reached  <br> - by calling inbox <br> - Number of valid datapoints|
 | get_area() | - Computes area around the image (box) which we want to set as valid area for ball to be in|
 | get_box_coordinates() | - Computes the coordinates of the box/images for its placement on screen and returns values to start() function|
+| ball_obs_overlap() | - Checks if the ball and obstacle overlap by seeing if point is in rectangle|
+
+
+
 
 ## Supporting Browsers
 
