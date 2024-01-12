@@ -1,5 +1,5 @@
 # ReCap
-![image-20230516001323369](./captcha-design.png)
+<img src="./captcha_design.jpeg" alt="Alt text" width="300">
 
 ## Description
 User moves the ball from the centre towards the upright image going around the obstacles. User can guide the ball by tilting their mobile device appropriately. On hovering over the right image, the captcha is passed, otherwise if hovered over other image, the captcha fails prompting the user to try again. If the user fails to solve the captcha in 10 seconds, the captcha resets itself to a new one.
