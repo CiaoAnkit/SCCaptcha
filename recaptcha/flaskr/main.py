@@ -29,6 +29,37 @@ dump_flag = True # for now
 
 user_data = {}
 
+def point_inside_rectangle(point, rectangle):
+    x, y = point
+    x1, y1 = rectangle["left"], rectangle["top"]
+    x2, y2 = rectangle["right"], rectangle["top"]
+    x3, y3 = rectangle["left"], rectangle["bottom"]
+    x4, y4 = rectangle["right"], rectangle["bottom"]
+    
+    # Check if the point is within the rectangle
+    if (min(x1, x3) <= x <= max(x2, x4) and
+        min(y1, y3) <= y <= max(y2, y4) and
+        x >= min(x1, x3) and
+        x <= max(x2, x4) and
+        y >= min(y1, y3) and
+        y <= max(y2, y4)):
+        return True
+    else:
+        return False
+    
+def ball_obs_overlap(path, user_id):
+    obs_areas = user_data[user_id]['obstacle_coords']
+    for area in obs_areas:
+        for point in path:
+            if point[0] is not None and point[1] is not None:
+                if point_inside_rectangle(point, area):
+                    print(Fore.RED,"point is in area:",point, area)
+                    print(Fore.WHITE,"")
+                    return True
+    return False
+
+
+
 def check_for_obstacle(prevpoint, path):
     pathlen = len(path)
     counter = 0
@@ -43,7 +74,6 @@ def check_for_obstacle(prevpoint, path):
         '''
         if None in prevpoint or None in path[i]:
             #remove point from path
-            path.pop(i)
             dist_trav = 0
             counter+=1
         else:
@@ -53,6 +83,7 @@ def check_for_obstacle(prevpoint, path):
             return counter, 0
         prevpoint = path[i]
     return counter, 1
+
 
 def verify_path(path,user_id):
     '''
@@ -66,6 +97,9 @@ def verify_path(path,user_id):
         return False
     prevpoint = path[1]
     
+    if ball_obs_overlap(path,user_id):
+        print("Ball passed through obstacle")
+        return 0
     counter, obs_check = check_for_obstacle(prevpoint, path)
 
     if not inbox(path[-1],captcha_box):
@@ -128,6 +162,7 @@ def start():
     box_pos = []
     obs_pos = []
     area_box = []
+    get_obs_areas = []
     #distance needed between obstacle and box, 60*(2^0.5) is needed for perfect non overlap
     obstacle_ball_offset = 90  
     for i, j in [(i,j) for i in [0,1] for j in [0,1]]:
@@ -154,10 +189,12 @@ def start():
         box_pos.append((box_x,box_y))
         obs_pos.append((obs_x,obs_y))
         area_box.append(get_area(box_x, box_y,img_id))
+        get_obs_areas.append(get_area(obs_x, obs_y, img_id))
 
     user_data[user_id]['obs'] = obs_pos
     user_data[user_id]['captcha_box'] = box_pos 
     user_data[user_id]['boundary'] = area_box
+    user_data[user_id]['obstacle_coords'] = get_obs_areas
 
     render_img(img_id, box_pos, ans, user_id, GC_WIDTH, GC_HEIGHT, img_first, img_last)
     print("user_id being send is", user_id)
