@@ -150,19 +150,7 @@
 		}
 
 		function checkSquare() {
-			// let square;
-			// let margin = squareSize;
-			// for (let i = 0; i < 4; i++) {
-			// 	let bool = ((ball.offsetLeft < captchaBox[i].right) && (ball.offsetLeft > captchaBox[i].left) && (ball.offsetTop < captchaBox[i].bottom) && (ball.offsetTop > captchaBox[i].top));
-			// 	if (inSquare[i] == true) {
-			// 		console.log("hit", i)
-			// 		if (bool) {
-			// 			time += 1;
-			// 		}
-			// 		else {
-			// 			time = 0;
-			// 			inSquare[i] = false;
-			// 		}
+
 			time += 0.1
 			if (time > tlimit) {
 				// add async and await to this post request
@@ -187,36 +175,8 @@
 			}
 
 		}
-
-		// 	}
-		// 	else if (bool) {
-		// 		inSquare[i] = true
-		// 		console.log("box ", i);
-		// 		time = 0
-		// 	}
-
-
-		// }
-
-
-		// box_pos = JSON.parse('{{ box_pos | tojson }}');
 		obs_pos = JSON.parse('{{ obs_pos | tojson }}');
-		// for (let i = 0; i < 4; i++) {
-		// 	let square = squares[i];
 
-		// 	square.style.position = "absolute";
-		// 	square.style.left = (box_pos[i][0]) - JSON.parse('{{ offset }}') + "px";
-		// 	square.style.top = (box_pos[i][1]) - - JSON.parse('{{ offset }}') + "px";
-
-		// 	let areaBox = {
-		// 		'left': (parseInt(square.style.left.replace(/px/, "")) - margin),
-		// 		'right': (parseInt(square.style.left.replace(/px/, "")) + squareSize + margin),
-		// 		'top': (parseInt(square.style.top.replace(/px/, "")) - margin),
-		// 		'bottom': (parseInt(square.style.top.replace(/px/, "")) + squareSize + margin)
-		// 	}
-		// 	console.log(square);
-		// 	captchaBox.push(areaBox)
-		// }
 		let brickSize = 70;
 		for (let i = 0; i < 4; i++) {
 			let b = bricks[i]
@@ -236,7 +196,8 @@
 		console.log(bricks)
 		captchaid = setInterval(checkSquare, 3);
 		setTimeout(function () {
-			location.reload();
+			window.alert("Time's up, try again")
+			window.location.href = "https://{{request.host}}/home"
 		}, 25000);
 		setInterval(function () {
 			path.push([(parseFloat(ball.style.left.replace(/px/, ""))), (parseFloat(ball.style.top.replace(/px/, "")))])

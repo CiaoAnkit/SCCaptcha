@@ -1,15 +1,17 @@
 import random
 import uuid
 import math
-import os
-import time
 import socket
+import json
 
-from PIL import Image, ImageFilter
 from flask import Flask, render_template, session, request, jsonify, redirect , url_for
-from itertools import product
 from colorama import Fore, Back, Style
 from random import choice, randint
+
+from image_handler import delete_img, render_img, get_img_name
+from helper import test_dist, dist
+from coordinate_handler import check_endpoint, inbox, get_area, get_box_coordinates
+from path_behaviour import behaviour
 
 
 MAX_SPEED = 5
@@ -20,86 +22,37 @@ offset2 = 80
 img_first = 0
 img_last = 1
 app = Flask(__name__,static_folder='static',static_url_path='')
-app.secret_key = 'secretkey'
+app.secret_key = 'secretkey'#
+file_path = "./path_dump.json"
+# dump_flag = True if input("Do you want to dump the paths? (y/n): ") == 'y' else False
+dump_flag = True # for now
 
 user_data = {}
 
-def delete_img():
-    '''
-    deletes all the files dates more than 2 minutes ago every time process starts
-    '''
-    now = time.time()
-    folder = './static/pics/temp'
-
-    files = [os.path.join(folder, filename) for filename in os.listdir(folder)]
-    for filename in files:
-        if (now - os.stat(filename).st_mtime) > 120:  # 2minutes
-            os.remove(filename)
-    return True
-    
-
-
-def render_img(img_id, box_pos, ans, user_id, gcwidth, gcheight):
-
-    newsize = (50,50)
-    img2 = Image.new('RGBA', (gcwidth, gcheight), (255, 0, 0, 0))
-    image2copy = img2.copy()
-    img3 = Image.open(f"./static/pics/noise1.png").convert('RGBA')
-    img3 = img3.resize(newsize)
-    img3copy = img3.copy()
-    #make it a more transparent
-    img3copy.putalpha(150)  
-    angles = [0]
-
-    for i in range(len(box_pos)):
-        img_num = randint(img_first,img_last)
-        angle_noise = randint(10,360)
-        pos = (box_pos[i][0],box_pos[i][1])
-        if ans == i:
-            img1 = Image.open(f"./static/pics/{img_id}.png").convert('RGBA')
-            img1 = img1.resize(newsize)
-            image1copy = img1.copy()
-            image2copy.paste(image1copy.rotate(1), pos, image1copy)
-            image2copy.paste(img3copy.rotate(angle_noise), pos, img3copy)
-
+def check_for_obstacle(prevpoint, path):
+    pathlen = len(path)
+    counter = 0
+    for i in range(2,pathlen):
+        '''
+        This is code for if obstacle is hit then return false
+        print("path[i]",path[i])
+        for corner in obs:
+            if inbox(path[i],corner):
+                print("Hit obstacle", path[i], corner)
+                return 3
+        '''
+        if None in prevpoint or None in path[i]:
+            #remove point from path
+            path.pop(i)
+            dist_trav = 0
+            counter+=1
         else:
-            img1 = Image.open(f"./static/pics/{img_num}.png").convert('RGBA')
-            img1 = img1.resize(newsize)
-            image1copy = img1.copy()
-            angle_animal = choice([i for i in range(10,360) if i not in angles])
-            image2copy.paste(image1copy.rotate(angle_animal), pos, image1copy)
-            image2copy.paste(img3copy.rotate(angle_noise), pos, img3copy)
-            angles.append(angle_animal)
-            
-
-
-    image2copy.save(f"./static/pics/temp/{user_id}.png")
-    return image2copy
-
-def check_endpoint(final_point, boundary):
-    x,y = final_point
-    if x is not None and y is not None:
-        for i in range(4):
-            if x < boundary[i]['right'] and x > boundary[i]['left'] and y < boundary[i]['bottom'] and y > boundary[i]['top']:
-                print(i, "is the guess")
-                return True, i
-    return False, 5
-
-def test_dist(a,b,path):
-    if a[0] is None or b[0] is None or a[1] is None or b[1] is None:
-        print(path)   
-    return math.sqrt((a[0]-b[0])**2 + (a[1]-b[1])**2) #has a problem TypeError: unsupported operand type(s) for -: 'NoneType' and 'int'
-
-def dist(a, b):
-    return math.sqrt((a[0]-b[0])**2 + (a[1]-b[1])**2) #has a problem TypeError: unsupported operand type(s) for -: 'NoneType' and 'int'
-
-def inbox(point,corner ,size=SQUARE_SIZE):
-    for i in range(0,2):
-        # print(point[i], corner[i]-size, corner[i] + size)
-        if not (point[i] > corner[i]-size and point[i] < corner[i] + size):
-            return False
-    return True
-
+            dist_trav = test_dist(prevpoint,path[i], path)
+        if dist_trav > THRESHOLD:
+            print("Distance too long", dist_trav)
+            return counter, 0
+        prevpoint = path[i]
+    return counter, 1
 
 def verify_path(path,user_id):
     '''
@@ -112,60 +65,26 @@ def verify_path(path,user_id):
         print("Path too short")
         return False
     prevpoint = path[1]
-    counter = 0  #to check how many points in path are None
-    for i in range(2,pathlen):
-        # print("path[i]",path[i])
-        # for corner in obs:
-        #     if inbox(path[i],corner):
-        #         print("Hit obstacle", path[i], corner)
-        #         return 3
-        if None in prevpoint or None in path[i]:
-            dist_trav = 0
-            counter+=1
-        else:
-            dist_trav = test_dist(prevpoint,path[i], path)
-        if dist_trav > THRESHOLD:
-            print("Distance too long", dist_trav)
-            return 0
-        prevpoint = path[i]
+    
+    counter, obs_check = check_for_obstacle(prevpoint, path)
+
     if not inbox(path[-1],captcha_box):
         print("Not in box", path[-1], captcha_box)
         return 0
     if counter > len(path)/3:
+        print("Too many null values")
         return 0
+    if not obs_check:
+        return 0
+    if behaviour(path):
+        return 0
+    
     return 1
 
-def get_area(x,y, img_id, margin = 20, squareSize = 20):
-    if img_id:
-        squareSize = 30
-    ans = {
-        'left': x - offset - margin,
-        'right': x - offset + squareSize + margin,
-        'top': y - offset - margin,
-        'bottom': y - offset + squareSize + margin
-    }
-    return ans
 
-def get_box_coordinates(sw,sh,lw,lh,borderw, borderh,i,j, GC_WIDTH, GC_HEIGHT):
-    area_choice=random.choices([0,1,2],weights=[sh*sw,(lh-offset)*sw,(lw-offset)*sh])
-    box_x=0
-    box_y=0
-    if area_choice[0]==0:
-        box_x =  GC_WIDTH//2 + pow(-1,i+1)*random.randint(borderw,borderw+sw)
-        box_y =  GC_HEIGHT//2 + pow(-1,j+1)*random.randint(borderh,borderh+sh)
-    elif area_choice[0]==1:
-        box_x = GC_WIDTH//2 + pow(-1,i+1)*random.randint(borderw,borderw+sw)
-        box_y = GC_HEIGHT//2 + pow(-1,j+1)*random.randint(offset,lh)
-    else:
-        box_x = GC_WIDTH//2 + pow(-1,i+1)*random.randint(offset,lw)
-        box_y = GC_HEIGHT//2 + pow(-1,j+1)*random.randint(borderh,borderh+sh)
-    return box_x, box_y
 
-def get_img_name(img_id):
-    if img_id == 0:
-        return "mouse"
-    else:
-        return "cat"
+
+
 
 @app.route('/', methods = ['GET'])
 def main():
@@ -240,7 +159,7 @@ def start():
     user_data[user_id]['captcha_box'] = box_pos 
     user_data[user_id]['boundary'] = area_box
 
-    render_img(img_id, box_pos, ans, user_id, GC_WIDTH, GC_HEIGHT)
+    render_img(img_id, box_pos, ans, user_id, GC_WIDTH, GC_HEIGHT, img_first, img_last)
     print("user_id being send is", user_id)
     return render_template('puzzle.html', user_id =user_id, offset=offset, offset2=offset2, gcheight = GC_HEIGHT, gcwidth=GC_WIDTH, box_pos=box_pos,obs_pos=obs_pos)
 
@@ -285,6 +204,11 @@ def guess():
                 'ans': ans
                 
             }
+            if dump_flag:
+                data_to_append = {"status": True, "path": path}
+                with open(file_path, 'a') as file:
+                    json.dump(data_to_append, file)
+                    file.write(',\n')
         else:
             response = {
                     'bool': 'false',
@@ -298,6 +222,11 @@ def guess():
                 'bool': 'true',
                 'ans': 6
             }
+            if dump_flag:
+                data_to_append = {"status": False, "path": path}
+                with open(file_path, 'a') as file:
+                    json.dump(data_to_append, file)
+                    file.write(',\n')
         else :
             response = {
                 'bool': 'false',
