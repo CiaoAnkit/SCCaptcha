@@ -19,8 +19,8 @@ SQUARE_SIZE = 40
 THRESHOLD = 130
 offset = 40
 offset2 = 80
-img_first = 0
-img_last = 1
+img_first = 1
+img_last = 14
 app = Flask(__name__,static_folder='static',static_url_path='')
 app.secret_key = 'secretkey'#
 file_path = "./path_dump.json"
@@ -104,15 +104,16 @@ def verify_path(path,user_id, GC_HEIGHT, GC_WIDTH):
         print("Not in box", path[-1], captcha_box)
         message = "Not in box"
         return 0, message
+    if behaviour(path):
+        message = "Robot like behaviour"
+        return 2, message
     if counter > len(path)/3:
         message = "Too many null values"
         return 0, message
     if not obs_check:
         message = "Too many jumps in path"
         return 0, message
-    if behaviour(path):
-        message = "Robot like behaviour"
-        return 0, message
+    
     
     return 1, "Valid path"
 
@@ -143,7 +144,6 @@ def start():
     '''
     
     GC_HEIGHT = int(request.args['gc_height']) if 'gc_height' in request.args else 700
-    GC_HEIGHT -= 25
     GC_WIDTH = int(request.args['gc_width']) if 'gc_width' in request.args else 380
     user_id = int(request.args['user_id']) if 'user_id' in request.args else 400
     img_id = int(request.args['img_id']) if 'img_id' in request.args else 0
@@ -244,18 +244,26 @@ def guess():
         if val==1:
             response = {
                 'bool': 'true',
-                'ans': ans,                
+                'ans': ans               
             }
             dump_data("True", path, file_path, dump_flag)
+
+        elif val == 2:
+            response = {
+                'bool' : 'false',
+                'ans' : 8,
+                'message': "Unusual behaviour, please try again"
+            }
+            dump_data("Robot", path, file_path, dump_flag)
+
         else:
             response = {
                     'bool': 'false',
-                    'ans': ans,
-                    'message': message
+                    'ans': ans
             }
     else:
-        print("Reached wrong desination")
         if result:
+            print("Reached wrong desination")
             response = {
                 'bool': 'true',
                 'ans': 6,

@@ -1,7 +1,7 @@
 import random
 from random import choice, randint
 
-SQUARE_SIZE = 40
+SQUARE_SIZE = 25
 offset = 40
 offset2 = 80
 

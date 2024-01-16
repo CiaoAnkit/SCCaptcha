@@ -30,7 +30,7 @@ def calculate_rmse_for_interval(path, interval):
 
     # Calculate RMSE for the last interval separately
     last_subset_path = path[-interval - 1:]
-    last_rmse = calculate_deflection(last_subset_path, path[-interval - 1], path[-1])
+    last_rmse = calculate_deflection(last_subset_path, last_subset_path[0], path[-1])
     rmse_values.append(last_rmse)
 
     return rmse_values
@@ -54,7 +54,8 @@ with open(file_path, 'r') as file:
 humans = 0
 robots = 0
 MEAN_THRESHOLD = float(input("what threshold do you want to set?"))
-INTERVALS_THRESHOLD = 0.5
+INTERVALS_THRESHOLD = 0.75
+true_robot = 0
 for obj in data:
     if "path" in reversed(obj):
         path = [point for point in obj.get("path", []) if None not in point]
@@ -79,13 +80,15 @@ for obj in data:
             print(Fore.WHITE,"Mean RMSE: ", mean_rmse, obj.get("status"))
             print("Count is",count, "Len is", len(rmse_values))
             robots += 1
+            if obj.get("status") == "Robot":
+                true_robot = +1
 result_file = "./results.txt"
 with open(result_file, "a") as f:
     data = str([MEAN_THRESHOLD, INTERVALS_THRESHOLD, count/len(rmse_values), humans, robots])
     f.write(data)
     f.write('\n')
 
-print("Humans: ", humans, "Robots: ", robots)
+print("Humans: ", humans, "Robots: ", robots, "True Robots: ", true_robot)
 
 
 

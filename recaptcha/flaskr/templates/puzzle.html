@@ -19,10 +19,10 @@
 			<img id="screen" src="pics/temp/{{user_id}}.png" alt="arrow" width="{{gcwidth}}px" height="{{gcheight}}px">
 		</div>
 		<div id="blocks">
-			<img id="block0" src="pics/tile.png" alt="arrow" width="70px" height="70px">
-			<img id="block1" src="pics/tile.png" alt="arrow" width="70px" height="70px">
-			<img id="block2" src="pics/tile.png" alt="arrow" width="70px" height="70px">
-			<img id="block3" src="pics/tile.png" alt="arrow" width="70px" height="70px">
+			<img id="block0" src="pics/images/tile.png" alt="arrow" width="70px" height="70px">
+			<img id="block1" src="pics/images/tile.png" alt="arrow" width="70px" height="70px">
+			<img id="block2" src="pics/images/tile.png" alt="arrow" width="70px" height="70px">
+			<img id="block3" src="pics/imagestile.png" alt="arrow" width="70px" height="70px">
 		</div>
 	</div>
 	<script>
@@ -128,7 +128,7 @@
 
 				else {
 					alert("Captcha passed")
-					window.location.href = "https://www.google.com"
+					window.location.href = "https://google.com"
 
 					// clearInterval(captchaid)
 					ball.style.left = 150;
@@ -140,7 +140,12 @@
 			}
 
 			else {
-
+				if (data['ans'] == 8) {
+					var msg = data['message']
+					alert(msg)
+					// alets for robot like behaviour, this is where we redirect to other captcha
+					window.location.href = "https://{{request.host}}/home"
+				}
 				ball.style.left = 150;
 				ball.offsetTop = 150;
 				captchaid = setInterval(checkSquare, 6);

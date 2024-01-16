@@ -19,7 +19,7 @@ def dump_data(status, path, file_path, dump_flag):
 def get_min_points(width, height, captcha_box):
     #we set values little less than actual values at which we measure due to possible inconsistencies &async issues
     sampling_rate = 0.1
-    ball= [width//2, height//2]
+    ball= [math.ceil(0.45*width), height//2]
     distance = dist(ball, captcha_box)
     sampling_interval = 1/sampling_rate
     num_points = distance /sampling_interval
