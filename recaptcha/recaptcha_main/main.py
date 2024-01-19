@@ -16,6 +16,7 @@ from coordinate_handler import check_endpoint, inbox, get_area, get_box_coordina
 from path_behaviour import behaviour
 from timeit import default_timer as timer
 from captcha.image import ImageCaptcha
+from captcha.audio import AudioCaptcha
 
 
 
@@ -34,13 +35,23 @@ dump_flag = True # for now
 
 user_data = {}
 
-def generate_captcha_string():
+def generate_captcha_string(user_id):
     characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
     captcha_string = ''.join(random.choice(characters) for _ in range(6))
     image = ImageCaptcha()
     data = image.generate(captcha_string)
-    image.write(captcha_string, './static/pics/temp/captcha.png')
+    image.write(captcha_string, f'./static/pics/temp/{user_id}.png')
     return captcha_string
+
+
+def generate_audio_captcha(user_id):
+    audio = AudioCaptcha()
+    characters = '0123456789'
+    captcha_text = ''.join(random.choice(characters) for _ in range(6))
+    audio_data = audio.generate(captcha_text)
+    audio_file = f"{user_id}.wav"
+    audio.write(captcha_text, f'./static/pics/temp/{audio_file}')  
+    return captcha_text
 
 def point_inside_rectangle(point, rectangle):
     x, y = point
@@ -149,34 +160,55 @@ def landing_page():
 
 @app.route('/fallback', methods = ['GET'])
 def fall_back():
-    num = random.randint(1,7)
-    page = get_random_page(num)
-    return redirect("/custom_captcha")
+    num = random.randint(0,1)
+    if num == 1:
+        return redirect("/audio_captcha")
+    # elif num == 1:
+    #     return redirect("/image_captcha")
+    else:
+        return redirect("/text_captcha")
 
 # Route for the custom captcha example
-@app.route('/custom_captcha', methods=['GET', 'POST'])
-def custom_captcha():
+@app.route('/text_captcha', methods=['GET', 'POST'])
+def text_captcha():
+    user_id = uuid.uuid1().int
     if request.method == 'POST':
         user_input = request.form['captcha_input']
         captcha_text = request.form['captcha_text']
+        user_id = user_id
         print(user_input, captcha_text)
         if user_input == captcha_text:
             return "Captcha passed!"
         else:
             return "Captcha failed!"
     else:
-        captcha_text = generate_captcha_string()
-        return render_template('custom_captcha.html', captcha_text=captcha_text)
+        captcha_text = generate_captcha_string(user_id)
+        return render_template('text_captcha.html', captcha_text=captcha_text, user_id = user_id)
 
-# @app.route('/recaptcha', methods = ['POST'])
-# def verify_recaptcha(response_token, secret_key):
-#     payload = {
-#         'secret': secret_key,
-#         'response': response_token
-#     }
-#     response = requests.post('https://www.google.com/recaptcha/api/siteverify', data=payload)
-#     result = response.json()
-#     return result['success']
+@app.route('/image_captcha', methods = ['GET','POST'])
+def image_captcha():
+    user_id = uuid.uuid1().int
+
+    pass
+
+@app.route('/audio_captcha', methods = ['GET', 'POST'])
+def audio_captcha():
+    user_id = uuid.uuid1().int
+    if request.method == 'POST':
+        user_input = request.form['captcha_input']
+        captcha_text = request.form['captcha_text']
+        user_id = user_id
+        print(user_input, captcha_text)
+        if user_input == captcha_text:
+            return "Captcha passed!"
+        else:
+            return "Captcha failed!"
+    else:
+        captcha_text = generate_audio_captcha(user_id)
+        return render_template('audio_captcha.html', captcha_text = captcha_text, user_id = user_id )
+
+
+    
 
 @app.route('/puzzle', methods=['POST', 'GET'])
 def start():
