@@ -8,12 +8,16 @@ import time
 from flask import Flask, render_template, session, request, jsonify, redirect , url_for
 from colorama import Fore, Back, Style
 from random import choice, randint
+import requests
 
 from image_handler import delete_img, render_img, get_img_name
 from helper import test_dist, dist, dump_data, get_min_points, get_random_page
 from coordinate_handler import check_endpoint, inbox, get_area, get_box_coordinates
 from path_behaviour import behaviour
 from timeit import default_timer as timer
+from captcha.image import ImageCaptcha
+
+
 
 MAX_SPEED = 5
 SQUARE_SIZE = 40
@@ -29,6 +33,14 @@ file_path = "./path_dump.json"
 dump_flag = True # for now
 
 user_data = {}
+
+def generate_captcha_string():
+    characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+    captcha_string = ''.join(random.choice(characters) for _ in range(6))
+    image = ImageCaptcha()
+    data = image.generate(captcha_string)
+    image.write(captcha_string, './static/pics/temp/captcha.png')
+    return captcha_string
 
 def point_inside_rectangle(point, rectangle):
     x, y = point
@@ -137,10 +149,34 @@ def landing_page():
 
 @app.route('/fallback', methods = ['GET'])
 def fall_back():
-    print("Reached fall back endpoint")
     num = random.randint(1,7)
     page = get_random_page(num)
-    return render_template(page)
+    return redirect("/custom_captcha")
+
+# Route for the custom captcha example
+@app.route('/custom_captcha', methods=['GET', 'POST'])
+def custom_captcha():
+    if request.method == 'POST':
+        user_input = request.form['captcha_input']
+        captcha_text = request.form['captcha_text']
+        print(user_input, captcha_text)
+        if user_input == captcha_text:
+            return "Captcha passed!"
+        else:
+            return "Captcha failed!"
+    else:
+        captcha_text = generate_captcha_string()
+        return render_template('custom_captcha.html', captcha_text=captcha_text)
+
+# @app.route('/recaptcha', methods = ['POST'])
+# def verify_recaptcha(response_token, secret_key):
+#     payload = {
+#         'secret': secret_key,
+#         'response': response_token
+#     }
+#     response = requests.post('https://www.google.com/recaptcha/api/siteverify', data=payload)
+#     result = response.json()
+#     return result['success']
 
 @app.route('/puzzle', methods=['POST', 'GET'])
 def start():
