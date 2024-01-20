@@ -1,6 +1,7 @@
 import math
 import json
 from colorama import Fore
+
 def test_dist(a,b,path):
     if a[0] is None or b[0] is None or a[1] is None or b[1] is None:
         print(path)   

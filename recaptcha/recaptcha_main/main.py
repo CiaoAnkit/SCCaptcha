@@ -10,13 +10,16 @@ from colorama import Fore, Back, Style
 from random import choice, randint
 import requests
 
-from image_handler import delete_img, render_img, get_img_name
-from helper import test_dist, dist, dump_data, get_min_points, get_random_page
-from coordinate_handler import check_endpoint, inbox, get_area, get_box_coordinates
-from path_behaviour import behaviour
+from recaptcha_main.image_handler import delete_img, render_img, get_img_name
+from recaptcha_main.helper import test_dist, dist, dump_data, get_min_points, get_random_page
+from recaptcha_main.coordinate_handler import check_endpoint, inbox, get_area, get_box_coordinates
+from recaptcha_main.path_behaviour import behaviour
 from timeit import default_timer as timer
 from captcha.image import ImageCaptcha
 from captcha.audio import AudioCaptcha
+from werkzeug.middleware.proxy_fix import ProxyFix
+
+from waitress import serve
 
 
 
@@ -27,8 +30,11 @@ offset = 40
 offset2 = 80
 img_first = 15
 img_last = 22
-app = Flask(__name__,static_folder='static',static_url_path='')
-app.secret_key = 'secretkey'#
+app = Flask(__name__,static_folder='static',static_url_path='',template_folder='templates')
+app.secret_key = '9fa39a52b44aaa7c7441435082af29d7c379ced38e72ae3535265bfda870fbd3'#
+app.wsgi_app = ProxyFix(
+    app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_prefix=1
+)
 file_path = "./path_dump.json"
 # dump_flag = True if input("Do you want to dump the paths? (y/n): ") == 'y' else False
 dump_flag = True # for now
@@ -160,6 +166,7 @@ def landing_page():
 
 @app.route('/fallback', methods = ['GET'])
 def fall_back():
+    delete_img()
     num = random.randint(0,1)
     if num == 1:
         return redirect("/audio_captcha")
@@ -365,5 +372,5 @@ if __name__ == '__main__':
     hostname = socket.gethostname()
     IPAddr = socket.gethostbyname(hostname)
     app.run(host="0.0.0.0",debug=True,ssl_context=("ssl.cert", "ssl.key"))
-
+    # serve(app, host='0.0.0.0', port=5000)
 

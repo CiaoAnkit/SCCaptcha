@@ -48,13 +48,15 @@
                 .catch(error => {
                     // Handle error
                     console.error('Error sending device information:', error);
-                    window.location.href = "https://{{request.host}}/fallback"
                 });
         }
         else {
 
             window.alert("Sensor not found, falling back")
-            window.location.href = "https://{{request.host}}/fallback"
+            method = "GET"
+            fetch("fallback", { method: method })
+                .then(response => window.location.href = response.url)
+                .catch(error => console.error('Error:', error));
         }
 
     }

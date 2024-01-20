@@ -4,7 +4,6 @@ from PIL import Image, ImageFilter
 from itertools import product
 from random import choice, randint
 
-
 def delete_img():
     '''
     deletes all the files dates more than 2 minutes ago every time process starts

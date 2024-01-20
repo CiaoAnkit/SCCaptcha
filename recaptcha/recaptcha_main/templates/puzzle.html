@@ -167,6 +167,8 @@
 				if ((isNaN(path[1][0]) && isNaN(path[1][1])) && (isNaN(path[path_len - 1][0]) && isNaN(path[path_len - 1][1]))) {
 					console.log("fallback redirected")
 					window.location.href = "https://{{request.host}}/fallback"
+					//make a get request to fallback
+
 				}
 
 			}
