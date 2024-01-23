@@ -45,7 +45,7 @@ def behaviour(path, INTERVALS_THRESHOLD = 0.75, MEAN_THRESHOLD = 1.4):
     count = 0
     for i in range(len(rmse_values)):
         if rmse_values[i] > INTERVALS_THRESHOLD:
-            rmse_values[i] = mean_rmse
+            # rmse_values[i] = mean_rmse
             count += 1
     if count >= len(rmse_values)/3 and mean_rmse > MEAN_THRESHOLD:
         # print("Human", "Mean RMSE: ", mean_rmse, obj.get("status"))

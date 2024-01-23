@@ -59,8 +59,8 @@
 				accx = acc.x;
 				accy = acc.y;
 
-				let ballLeft = ball.offsetLeft - accx * 5;
-				let ballTop = ball.offsetTop + accy * 5;
+				let ballLeft = ball.offsetLeft - accx * 4;
+				let ballTop = ball.offsetTop + accy * 4;
 				console.log(ballLeft, ballTop)
 				console.log(gameContainer.offsetWidth)
 				let f = false;
@@ -94,7 +94,7 @@
 						break;
 
 					}
-					ballTop = ball.offsetTop + accy * 5;
+					ballTop = ball.offsetTop + accy * 4;
 					ballLeft = ball.offsetLeft;
 					if (ballLeft + ball.offsetWidth > b.offsetLeft && ballLeft < b.offsetLeft + brickWidth &&
 						ballTop + ball.offsetHeight > b.offsetTop && ballTop < b.offsetTop + brickHeight) {
@@ -104,7 +104,7 @@
 						break;
 
 					}
-					ballLeft = ball.offsetLeft - accx * 5;
+					ballLeft = ball.offsetLeft - accx * 4;  //chnaged to 3 after 982
 				}
 				if (!f) {
 					ball.style.left = ballLeft + "px";

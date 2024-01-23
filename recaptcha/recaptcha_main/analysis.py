@@ -53,11 +53,16 @@ with open(file_path, 'r') as file:
 #latest plots will be displayed first
 humans = 0
 robots = 0
+leng = 0
 MEAN_THRESHOLD = float(input("what threshold do you want to set?"))
 INTERVALS_THRESHOLD = 0.75
 true_robot = 0
-for obj in data:
-    if "path" in reversed(obj):
+total_mean_rmse = 0
+mean_time = 0
+times =0 
+rights = 0
+for obj in reversed(data):
+    if "path" in obj:
         path = [point for point in obj.get("path", []) if None not in point]
 
         interval = 10
@@ -68,10 +73,8 @@ for obj in data:
         count = 0
         for i in range(len(rmse_values)):
             if rmse_values[i] > INTERVALS_THRESHOLD:
-                rmse_values[i] = mean_rmse
                 count += 1
         if count >= len(rmse_values)/3 and mean_rmse > MEAN_THRESHOLD:
-            # print("Human", "Mean RMSE: ", mean_rmse, obj.get("status"))
             print(mean_rmse)
             humans += 1
 
@@ -82,6 +85,13 @@ for obj in data:
             robots += 1
             if obj.get("status") == "Robot":
                 true_robot = +1
+        if obj.get("status") == "True":
+            rights+=1
+        total_mean_rmse+=mean_rmse
+        leng+=1
+        if 'time' in obj:
+            mean_time += obj.get('time')
+            times+=1
 result_file = "./results.txt"
 with open(result_file, "a") as f:
     data = str([MEAN_THRESHOLD, INTERVALS_THRESHOLD, count/len(rmse_values), humans, robots])
@@ -89,7 +99,9 @@ with open(result_file, "a") as f:
     f.write('\n')
 
 print("Humans: ", humans, "Robots: ", robots, "True Robots: ", true_robot)
-
+print(Fore.CYAN,"Rights: ", rights, "Wrongs", humans-rights, "Success rate: ", rights/humans * 100)
+print(Fore.RED,"Total Mean RMSE: ", total_mean_rmse/leng)
+print(Fore.WHITE,"Solving time: ", mean_time/times)
 
 
 
