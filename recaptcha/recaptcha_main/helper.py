@@ -27,6 +27,7 @@ def get_min_points(width, height, captcha_box):
     return int(num_points)
 
 def get_random_page(num):
+    print("image got")
     if num == 1:
         return "./task/acc-task1.html"
     elif num == 2:

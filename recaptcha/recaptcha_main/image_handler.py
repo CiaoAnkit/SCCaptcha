@@ -1,9 +1,9 @@
 import os
 import time
-from PIL import Image, ImageFilter
+from PIL import Image, ImageFilter, ImageFont, ImageDraw 
 from itertools import product
 from random import choice, randint
-
+from colorama import Fore
 def delete_img():
     '''
     deletes all the files dates more than 2 minutes ago every time process starts
@@ -20,7 +20,12 @@ def delete_img():
 def render_img(img_id, box_pos, ans, user_id, gcwidth, gcheight, img_first, img_last):
 
     newsize = (50, 50)
-    img2 = Image.new('RGBA', (gcwidth, gcheight), (255, 255, 255, 255))
+    img2 = Image.new('RGBA', (gcwidth, gcheight), (225,255,255,255))
+    # draw = ImageDraw.Draw(img2)
+    # font = ImageFont.truetype("sans-serif.ttf", 16)
+    # draw.text((gcwidth//2, 0),"Sample Text",(255,255,255),font=font)
+    # img2c = img2.copy()
+    # img2c.save(f"./recaptcha_main/static/pics")
     image2copy = img2.copy()
     # img3 = Image.open(f"./static/pics/noise1.png").convert('RGBA')
     # img3 = img3.resize(newsize)

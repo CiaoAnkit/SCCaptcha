@@ -44,6 +44,16 @@ def plot_graph(x_values, y_values, rmse_values, interval, status):
     plt.grid(True)
     plt.show()
 
+def plot_graph_t(x_values):
+    #plot x values versus frequency buckets more smoother than histogram
+    plt.hist(x_values, bins=30)
+    plt.title("Time Plot")
+    plt.xlabel("Time")
+    plt.ylabel("Frequency")
+    plt.grid(True)
+    plt.show()
+
+   
 
 # Specify the file path
 file_path = "./path_dump.json"
@@ -59,7 +69,7 @@ INTERVALS_THRESHOLD = 0.75
 true_robot = 0
 total_mean_rmse = 0
 mean_time = 0
-times =0 
+times = []
 rights = 0
 for obj in reversed(data):
     if "path" in obj:
@@ -90,8 +100,8 @@ for obj in reversed(data):
         total_mean_rmse+=mean_rmse
         leng+=1
         if 'time' in obj:
-            mean_time += obj.get('time')
-            times+=1
+            tim= obj.get('time')
+            times.append(tim)
 result_file = "./results.txt"
 with open(result_file, "a") as f:
     data = str([MEAN_THRESHOLD, INTERVALS_THRESHOLD, count/len(rmse_values), humans, robots])
@@ -99,9 +109,18 @@ with open(result_file, "a") as f:
     f.write('\n')
 
 print("Humans: ", humans, "Robots: ", robots, "True Robots: ", true_robot)
+total = humans + robots
+print("Data points : ", total)
+#plot times statistics
+print("TIME STATS")
+print("Mean time: ", sum(times)/len(times))
+print("Max time: ", max(times))
+print("Min time: ", min(times))
+print("Median time: ", sorted(times)[len(times)//2])
+plot_graph_t(times)
 print(Fore.CYAN,"Rights: ", rights, "Wrongs", humans-rights, "Success rate: ", rights/humans * 100)
 print(Fore.RED,"Total Mean RMSE: ", total_mean_rmse/leng)
-print(Fore.WHITE,"Solving time: ", mean_time/times)
+print(Fore.WHITE,"Solving time: ", sum(times)/len(times))
 
 
 
