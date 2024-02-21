@@ -1,0 +1,12 @@
+pyproject.toml
+recaptcha_main/analysis.py
+recaptcha_main/coordinate_handler.py
+recaptcha_main/helper.py
+recaptcha_main/image_handler.py
+recaptcha_main/main.py
+recaptcha_main/path_behaviour.py
+recaptcha_main.egg-info/PKG-INFO
+recaptcha_main.egg-info/SOURCES.txt
+recaptcha_main.egg-info/dependency_links.txt
+recaptcha_main.egg-info/requires.txt
+recaptcha_main.egg-info/top_level.txt

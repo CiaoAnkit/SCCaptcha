@@ -1,5 +1,5 @@
 [project]
-name = "ReCaptcha"
+name = "recaptcha_main"
 version = "0.0.1"
 authors = [
   { name="Example Author", email="author@example.com" },

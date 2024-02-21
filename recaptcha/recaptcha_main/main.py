@@ -10,7 +10,7 @@ from colorama import Fore, Back, Style
 from random import choice, randint
 import requests
 
-from recaptcha_main.image_handler import delete_img, render_img, get_img_name
+from image_handler import delete_img, render_img, get_img_name
 from recaptcha_main.helper import test_dist, dist, dump_data, get_min_points, get_random_page
 from recaptcha_main.coordinate_handler import check_endpoint, inbox, get_area, get_box_coordinates
 from recaptcha_main.path_behaviour import behaviour
@@ -35,7 +35,7 @@ app.secret_key = '9fa39a52b44aaa7c7441435082af29d7c379ced38e72ae3535265bfda870fb
 app.wsgi_app = ProxyFix(
     app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_prefix=1
 )
-file_path = "./path_dump.json"
+file_path = "./data/path_dump.json"
 # dump_flag = True if input("Do you want to dump the paths? (y/n): ") == 'y' else False
 dump_flag = True # for now
 
@@ -293,6 +293,7 @@ def coordinates():
     data = request.json
     GC_WIDTH = data.get('gc_width')
     GC_HEIGHT = data.get('gc_height')
+    print("device coordinates are", GC_WIDTH, GC_HEIGHT)
     user_id = int(data.get('user_id'))
     img_id = int(data.get('img_id'))
     return redirect(f'/puzzle?img_id={img_id}&gc_width={GC_WIDTH}&gc_height={GC_HEIGHT}&user_id={user_id}')

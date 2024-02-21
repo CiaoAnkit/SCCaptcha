@@ -63,8 +63,6 @@
 
 				let ballLeft = ball.offsetLeft - accx * 4;
 				let ballTop = ball.offsetTop + accy * 4;
-				console.log(ballLeft, ballTop)
-				console.log(gameContainer.offsetWidth)
 				let f = false;
 				// collision with container handling
 				if (ballLeft <= 0 || ballLeft + ball.offsetWidth >= gameContainer.offsetWidth) {
@@ -163,9 +161,7 @@
 			time += 0.05
 			see_time += 0.05
 			if (see_time > 15) {
-				console.log("should fallback")
 				let path_len = path.length;
-				console.log(path[1], path[path_len - 1])
 				if ((isNaN(path[1][0]) && isNaN(path[1][1])) && (isNaN(path[path_len - 1][0]) && isNaN(path[path_len - 1][1]))) {
 					console.log("fallback redirected")
 					window.location.href = "https://{{request.host}}/fallback"

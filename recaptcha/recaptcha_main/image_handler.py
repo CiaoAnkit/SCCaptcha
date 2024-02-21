@@ -9,7 +9,7 @@ def delete_img():
     deletes all the files dates more than 2 minutes ago every time process starts
     '''
     now = time.time()
-    folder = 'recaptcha_main/static/pics/temp'
+    folder = './static/pics/temp'
 
     files = [os.path.join(folder, filename) for filename in os.listdir(folder)]
     for filename in files:
@@ -19,13 +19,13 @@ def delete_img():
 
 def render_img(img_id, box_pos, ans, user_id, gcwidth, gcheight, img_first, img_last):
 
-    newsize = (50, 50)
+    newsize = (55, 55)
     img2 = Image.new('RGBA', (gcwidth, gcheight), (225,255,255,255))
     # draw = ImageDraw.Draw(img2)
     # font = ImageFont.truetype("sans-serif.ttf", 16)
     # draw.text((gcwidth//2, 0),"Sample Text",(255,255,255),font=font)
     # img2c = img2.copy()
-    # img2c.save(f"./recaptcha_main/static/pics")
+    # img2c.save(f"././static/pics")
     image2copy = img2.copy()
     # img3 = Image.open(f"./static/pics/noise1.png").convert('RGBA')
     # img3 = img3.resize(newsize)
@@ -45,7 +45,7 @@ def render_img(img_id, box_pos, ans, user_id, gcwidth, gcheight, img_first, img_
 
         if ans == i:
             angle_animal = 1
-            img1 = Image.open(f"recaptcha_main/static/pics/images/{img_id}.png").convert('RGBA')
+            img1 = Image.open(f"./static/pics/images/{img_id}.png").convert('RGBA')
             img1 = img1.resize(newsize)
             image1copy = img1.copy()
             rot = image1copy.rotate(1)
@@ -56,10 +56,10 @@ def render_img(img_id, box_pos, ans, user_id, gcwidth, gcheight, img_first, img_
             # out.save(f"./static/pics/test/{name}.png")
 
         else:
-            img1 = Image.open(f"recaptcha_main/static/pics/images/{img_num}.png").convert('RGBA')
+            img1 = Image.open(f"./static/pics/images/{img_num}.png").convert('RGBA')
             img1 = img1.resize(newsize)
             image1copy = img1.copy()
-            angle_animal = choice([i for i in range(20,360) if i not in angles])
+            angle_animal = choice([i for i in [30,87,136] if i not in angles])
             rot = image1copy.rotate(angle_animal)
             fff = Image.new('RGBA', rot.size, (255,)*4)
             out = Image.composite(rot, fff, rot)
@@ -71,7 +71,7 @@ def render_img(img_id, box_pos, ans, user_id, gcwidth, gcheight, img_first, img_
             
 
 
-    image2copy.save(f"recaptcha_main/static/pics/temp/{user_id}.png")
+    image2copy.save(f"./static/pics/temp/{user_id}.png")
     return image2copy
 
 def get_img_name(img_id):
