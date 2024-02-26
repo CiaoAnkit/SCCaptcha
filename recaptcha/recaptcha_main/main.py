@@ -11,9 +11,9 @@ from random import choice, randint
 import requests
 
 from image_handler import delete_img, render_img, get_img_name
-from recaptcha_main.helper import test_dist, dist, dump_data, get_min_points, get_random_page
-from recaptcha_main.coordinate_handler import check_endpoint, inbox, get_area, get_box_coordinates
-from recaptcha_main.path_behaviour import behaviour
+from helper import test_dist, dist, dump_data, get_min_points, get_random_page
+from coordinate_handler import check_endpoint, inbox, get_area, get_box_coordinates
+from path_behaviour import behaviour
 from timeit import default_timer as timer
 from captcha.image import ImageCaptcha
 from captcha.audio import AudioCaptcha

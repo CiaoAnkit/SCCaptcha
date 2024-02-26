@@ -77,9 +77,14 @@ def get_correctness_over_time(data, n):
     correct = np.array(correct)
     data_2d = correct.reshape(num,n)
     flag = input("Do you want to include person 0's data? (y/n): ")
-    if flag == 'y':
+    # if flag == 'y':
         # data_2d = np.append(data_2d, get_data_person_0(data), axis=0)
-        data_2d = get_data_person_0(data)
+    new_data_2d = get_data_person_0(data)
+    #plot new_data_2d along side the old data_2d
+    new_corrects = np.sum(new_data_2d == 1, axis=0)
+    new_wrongs = np.sum(new_data_2d == 0, axis=0)
+    new_robots = np.sum(new_data_2d == 2, axis=0)
+
     corrects = np.sum(data_2d == 1, axis=0)
     wrongs = np.sum(data_2d == 0, axis=0)
     robots = np.sum(data_2d == 2, axis=0)
