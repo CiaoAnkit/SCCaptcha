@@ -16,7 +16,7 @@ new_t1 = []
 new_t2 = []
 new_m = []
 new_recall = []
-for x in data[:-3]:
+for x in data:
     if int(x.split(",")[3])==3:
         print(x)
         T1.append(float(x.split(",")[0][1:]))
@@ -57,21 +57,20 @@ for x in data[:-3]:
 # plt.show()
 #plot T1 and recall as line plotwith dots
 plt.figure(figsize=(10, 6))
-plt.rcParams.update({'font.size': 20})
+plt.rcParams.update({'font.size': 18})
 
 plt.plot(T1, recall, marker='o', label = "s = 1/3")
-plt.plot(new_t1, new_recall, marker='o', color='red', label = "s = 1/2")
+plt.plot(new_t1, new_recall, marker='x', color='red', label = "s = 1/2")
 #annonate the points by adding T2, m and s
 
 for i in range(len(T1)):
-    plt.annotate(f"({T2[i]}, {m[i]})", (T1[i], recall[i]))
+    plt.annotate(f"({T2[i]})", (T1[i], recall[i]))
 
 for i in range(len(new_t1)):
-    plt.annotate(f"({new_t2[i]}, {new_m[i]})", (new_t1[i], new_recall[i]), ha = 'center', va='bottom')
+    plt.annotate(f"({new_t2[i]})", (new_t1[i], new_recall[i]), )
 # for i in range(len(T1)):
 #     plt.text(T2,m,s, f'({T2[i]},{m[i]},{s[i]})')
 plt.xlabel('T1')
 plt.ylabel('Recall')
-plt.title('T1 vs Recall')
 plt.legend()
 plt.show()
