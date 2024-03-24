@@ -20,7 +20,7 @@ rating2 = [text_captcha[1], touch_captcha[1], rotate_captcha[1]]
 rating3 = [text_captcha[2], touch_captcha[2], rotate_captcha[2]]
 rating4 = [text_captcha[3], touch_captcha[3], rotate_captcha[3]]
 rating5 = [text_captcha[4], touch_captcha[4], rotate_captcha[4] ]
-df = pd.DataFrame({'Highly prefer the given': rating1, 'Would rather prefer the given': rating2, 'Equal preference for both': rating3, 'Would rather prefer our captcha': rating4, 'Highly prefer our captcha': rating5}, index=ind)
+df = pd.DataFrame({'Highly prefer the given': rating1, 'Would rather prefer the given': rating2, 'Equal preference for both': rating3, 'Would rather prefer SCCaptcha': rating4, 'Highly prefer  SCCaptcha': rating5}, index=ind)
 plt.rcParams.update({'font.size': 16})
 #write values inside 
 
@@ -34,7 +34,7 @@ for idx, bar in enumerate(ax.patches):
     width = bar.get_width()
     height = bar.get_height()
     x, y = bar.get_xy()
-    ax.annotate(f'{width:.1f}%', (x + width / 2, y + height / 2), ha='center', va='center', color='white')
+    ax.annotate(f'{width:.1f}%', (x + width / 2, y + height / 2), ha='center', va='center', color='white', rotation = 45)
 
 legend = plt.legend(loc='lower center', bbox_to_anchor=(0.5, 1.05), fancybox=True, shadow=True, ncol=5, markerscale=2.5)
 for text in legend.get_texts():

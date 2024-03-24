@@ -1,10 +1,9 @@
 import matplotlib.pyplot as plt
-
 # Define the data
-# labels = ['18-24', '25-30', '>30']
-# sizes = [74.2, 24.2, 1.7]
-labels = ['Male', 'Female']
-sizes = [80,20]
+labels = ['18-24', '25-30', '>30']
+sizes = [80/107, 25/107, 2/107]
+# labels = ['Male', 'Female']
+# sizes = [87/107,20/107]
 # colors = ['lightblue', 'lightgreen', 'lightcoral']
 # explode = (0.1, 0, 0)  # explode the first slice (18-24)
 # linestyles = ['-', '--', ':']  # Different line styles for each age group
