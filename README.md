@@ -1,7 +1,7 @@
 # Swiss Cheese CAPTCHA: A Novel Multi-barrier Mechanism for Bot Detection
 
 ## Introduction
-Swiss Cheese CAPTCHA (SCCaptcha) is a multi barrier CAPTCHA mechanism. In SCCaptcha user moves the ball from the centre towards the upright image going around the obstacles. User can guide the ball by tilting their mobile device appropriately. On hovering over the right image, the captcha is passed, otherwise if hovered over other image, the captcha fails prompting the user to try again. If the user fails to solve the captcha in 10 seconds, the captcha resets itself to a new one.
+Swiss Cheese CAPTCHA (SCCaptcha) is a multi barrier CAPTCHA mechanism. In SCCaptcha user moves the ball from the centre towards the upright image going around the obstacles. User can guide the ball by tilting their mobile device appropriately. On hovering over the right image, the captcha is passed, otherwise if hovered over other image, the captcha fails prompting the user to try again. If the user fails to solve the captcha in 25 seconds, the captcha resets itself to a new one.
 
 ### Please don't forget to cite our paper. 
 Ankit Gangwal, P. Sahithi Reddy, and C.Y.K. Sagar. 2025. Swiss Cheese
