@@ -1,0 +1,7 @@
+./static/pics/temp/*
+./static/pics/test/*
+*.key
+*.cert
+__pycache__/
+./analysis/*
+./captcha_design.jpeg
