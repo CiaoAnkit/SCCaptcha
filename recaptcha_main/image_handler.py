@@ -4,12 +4,13 @@ from PIL import Image, ImageFilter, ImageFont, ImageDraw
 from itertools import product
 from random import choice, randint
 from colorama import Fore
+folder = 'recaptcha_main/static/pics/temp'
+
 def delete_img():
     '''
     deletes all the files dates more than 2 minutes ago every time process starts
     '''
     now = time.time()
-    folder = './static/pics/temp'
 
     files = [os.path.join(folder, filename) for filename in os.listdir(folder)]
     for filename in files:
@@ -45,7 +46,7 @@ def render_img(img_id, box_pos, ans, user_id, gcwidth, gcheight, img_first, img_
 
         if ans == i:
             angle_animal = 1
-            img1 = Image.open(f"./static/pics/images/{img_id}.png").convert('RGBA')
+            img1 = Image.open(f"./recaptcha_main/static/pics/images/{img_id}.png").convert('RGBA')
             img1 = img1.resize(newsize)
             image1copy = img1.copy()
             rot = image1copy.rotate(1)
@@ -56,7 +57,7 @@ def render_img(img_id, box_pos, ans, user_id, gcwidth, gcheight, img_first, img_
             # out.save(f"./static/pics/test/{name}.png")
 
         else:
-            img1 = Image.open(f"./static/pics/images/{img_num}.png").convert('RGBA')
+            img1 = Image.open(f"./recaptcha_main/static/pics/images/{img_num}.png").convert('RGBA')
             img1 = img1.resize(newsize)
             image1copy = img1.copy()
             angle_animal = choice([i for i in [30,87,136] if i not in angles])
@@ -71,7 +72,7 @@ def render_img(img_id, box_pos, ans, user_id, gcwidth, gcheight, img_first, img_
             
 
 
-    image2copy.save(f"./static/pics/temp/{user_id}.png")
+    image2copy.save(f"{folder}/{user_id}.png")
     return image2copy
 
 def get_img_name(img_id):

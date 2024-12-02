@@ -29,13 +29,13 @@ for obj in data:
 box_pos = np.array(box_pos)
 obs_pos = np.array(obs_pos)
 ans_pos = np.array(ans_pos)
-plt.rcParams.update({'font.size': 22})
+plt.rcParams.update({'font.size': 18})
 
-plt.scatter(box_pos[:,0], box_pos[:,1], c='r', label='Images')
-plt.scatter(obs_pos[:,0], obs_pos[:,1], c='b', label='Obstacles')
-plt.scatter(ans_pos[:,0], ans_pos[:,1], c='g', label='Answer')
+plt.scatter(box_pos[:,0], box_pos[:,1], c='r', label='Objects that\nare not answers', marker= '^')
+plt.scatter(obs_pos[:,0], obs_pos[:,1], c='b', label='Obstacles', marker= 'x')
+plt.scatter(ans_pos[:,0], ans_pos[:,1], c='g', label='Objects that\nare answers', marker= '.')
 #increase font size of axis numbers and labels
-plt.legend(loc='lower center', bbox_to_anchor=(0.5, 1.05), fancybox=True, shadow=True, ncol=3, markerscale=2.5)
+plt.legend(loc='center', bbox_to_anchor=(1.5, 0.5), fancybox=True,ncol=1, markerscale=2.5)
 
 plt.show()
 

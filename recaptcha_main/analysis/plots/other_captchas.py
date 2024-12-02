@@ -21,7 +21,7 @@ rating3 = [text_captcha[2], touch_captcha[2], rotate_captcha[2]]
 rating4 = [text_captcha[3], touch_captcha[3], rotate_captcha[3]]
 rating5 = [text_captcha[4], touch_captcha[4], rotate_captcha[4] ]
 df = pd.DataFrame({'Highly prefer the given': rating1, 'Would rather prefer the given': rating2, 'Equal preference for both': rating3, 'Would rather prefer SCCaptcha': rating4, 'Highly prefer  SCCaptcha': rating5}, index=ind)
-plt.rcParams.update({'font.size': 16})
+plt.rcParams.update({'font.size': 18})
 #write values inside 
 
 ax = df.plot.barh(stacked=True)
@@ -36,7 +36,7 @@ for idx, bar in enumerate(ax.patches):
     x, y = bar.get_xy()
     ax.annotate(f'{width:.1f}%', (x + width / 2, y + height / 2), ha='center', va='center', color='white', rotation = 45)
 
-legend = plt.legend(loc='lower center', bbox_to_anchor=(0.5, 1.05), fancybox=True, shadow=True, ncol=5, markerscale=2.5)
+legend = plt.legend(loc='lower center', bbox_to_anchor=(0.5, 1.05), fancybox=True, ncol=5, markerscale=3)
 for text in legend.get_texts():
-    text.set_text(textwrap.fill(text.get_text(), width=15))
+    text.set_text(textwrap.fill(text.get_text(), width=18))
 plt.show()

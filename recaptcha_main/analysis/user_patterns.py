@@ -112,16 +112,16 @@ def get_correctness_over_time(data, n):
     print(corrects)
     print(wrongs)
     print(robots)
-    bar_width = 0.35
+    bar_width = 0.4
     plt.rcParams.update({'font.size': 18})
     num_solves = n
     index = np.arange(num_solves)
     solves_yes = int(input("press 1 for solves, 0 for time"))
     if solves_yes == 1:
-        plt.bar(index-bar_width/2, new_corrects,bottom=new_wrongs, width =bar_width, label='Correct-Study1', hatch = "//")
-        plt.bar(index-bar_width/2, new_wrongs, width= bar_width, label='Incorrect-Study1', hatch = "||")
-        plt.bar(index+bar_width/2, corrects,bottom=wrongs, width =bar_width, label='Correct-Study2', hatch = "\\\\")
-        plt.bar(index+bar_width/2, wrongs, width= bar_width, label='Incorrect-Study2', hatch = "--")
+        plt.bar(index-bar_width/2, new_corrects,bottom=new_wrongs, width =bar_width, label='Correct solves\nStudy1', hatch = "//")
+        plt.bar(index-bar_width/2, new_wrongs, width= bar_width, label='Incorrect solves\nStudy1', hatch = "||")
+        plt.bar(index+bar_width/2, corrects,bottom=wrongs, width =bar_width, label='Correct solves\nStudy2', hatch = "\\\\")
+        plt.bar(index+bar_width/2, wrongs, width= bar_width, label='Incorrect solves\nStudy2', hatch = "--")
         plt.ylabel('Number of participants \n who solved atleast 10 times')
 
     else:
@@ -159,9 +159,9 @@ def get_correctness_over_time(data, n):
     
     # plt.bar(index+bar_width/2, new_robots, bottom=new_wrongs+new_corrects,width = bar_width)
 
-    x_labels = [f'S{i}' for i in range(1, n + 1)]  # Generate labels T1, T2, ..., T10
+    x_labels = [f'{i}' for i in range(1, n + 1)]  # Generate labels T1, T2, ..., T10
     plt.xticks(range(num_solves), x_labels)
-    plt.legend(loc='lower center', bbox_to_anchor=(0.5, 1.05), fancybox=True, shadow=True, ncol=2, markerscale=2.5)
+    plt.legend(loc='lower center', bbox_to_anchor=(0.5, 1.05), fancybox=True,ncol=4, markerscale=1)
     plt.xlabel('Solve number')
     plt.show()
 def check_robots_person0(data):

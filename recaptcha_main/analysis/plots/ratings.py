@@ -42,7 +42,7 @@ values2_percentage = [i / sum(values2) * 100 for i in values2]  # Normalize valu
 text = ['Very Difficult', 'Difficult', 'Moderate', 'Easy', 'Very Easy']
 
 # Set the width of the barsbar_
-bar_width = 0.35
+bar_width = 0.30
 plt.rcParams.update({'font.size': 18})
 
 # Set the x locations for the groups

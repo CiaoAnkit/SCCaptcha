@@ -61,6 +61,7 @@ file_path = "../data/path_data.json"
 with open(file_path, 'r') as file:
     data = json.load(file)
 #latest plots will be displayed first
+
 humans = 0
 robots = 0
 leng = 0
@@ -88,8 +89,7 @@ for obj in reversed(data):
     else:
         correctly_solved+=1
         if "path" in obj:
-            path = [point for point in obj.get("path", []) if None not in point]
-
+            path = [[201, 390], [201, 392], [209, 388], [209, 393], [207, 398], [209, 398], [210, 398], [211, 398], [218, 398], [227, 398], [228, 398], [230, 398], [227, 406], [224, 414], [217, 421], [217, 429], [224, 429], [229, 429], [236, 429], [236, 434], [233, 437], [226, 445], [226, 453], [228, 453], [217, 466], [213, 477], [180, 567], [189, 564], [192, 564], [196, 560], [204, 560], [204, 563], [208, 563], [213, 587], [218, 597], [221, 597], [228, 597], [229, 587], [229, 583], [235, 583], [236, 586], [236, 581], [243, 581], [244, 581], [250, 587], [257, 587], [257, 584], [262, 563], [262, 572], [267, 572], [267, 580], [269, 592], [277, 592], [278, 595], [324, 551], [325, 551], [325, 557], [322, 562], [324, 562], [328, 562], [337, 562], [344, 562], [353, 562], [355, 562], [347, 599], [358, 600], [357, 596], [357, 590], [359, 590], [357, 585]]
             interval = m
             x_values, y_values = zip(*path)
             rmse_values = calculate_rmse_for_interval(path, interval)
@@ -103,6 +103,7 @@ for obj in reversed(data):
                     count += 1
             if count >= len(rmse_values)/s and mean_rmse > MEAN_THRESHOLD:
                 humans += 1
+                print("Human")
                 if obj.get("status") == "True" or obj.get("status") == 1:
                     rights+=1
                     true_pos+=1
