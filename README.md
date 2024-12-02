@@ -1,67 +1,66 @@
 # Swiss Cheese CAPTCHA: A Novel Multi-barrier Mechanism for Bot Detection
 
-## Introduction
-Swiss Cheese CAPTCHA (SCCaptcha) is a multi barrier CAPTCHA mechanism. In SCCaptcha user moves the ball from the centre towards the upright image going around the obstacles. User can guide the ball by tilting their mobile device appropriately. On hovering over the right image, the captcha is passed, otherwise if hovered over other image, the captcha fails prompting the user to try again. If the user fails to solve the captcha in 25 seconds, the captcha resets itself to a new one.
+### Introduction
+Swiss Cheese CAPTCHA (SCCaptcha) is a multi-barrier CAPTCHA mechanism. In SCCaptcha, the user moves the ball from the center towards the upright image, going around the obstacles. User can guide the ball by tilting their mobile device appropriately. On hovering over the right image, SCCaptcha is passed; otherwise, if hovered over another image, SCCaptcha fails, prompting the user to try again. If the user fails to solve SCCaptcha in 25 seconds, SCCaptcha resets itself to a new one.
 
 ### Please don't forget to cite our paper. 
-Ankit Gangwal, P. Sahithi Reddy, and C.Y.K. Sagar. 2025. Swiss Cheese
-CAPTCHA: A Novel Multi-barrier Mechanism for Bot Detection. In Proceed-
-ings of ACM SAC Conference (SAC’25). ACM, New York, NY, USA. 
+Ankit Gangwal, P. Sahithi Reddy, C.Y.K. Sagar. <br>
+Swiss Cheese CAPTCHA: A Novel Multi-barrier Mechanism for Bot Detection. <br>
+In Proceedings of the 40th ACM/SIGAPP Symposium On Applied Computing <br>
+(ACM SAC 2025), in press, Sicily, Italy, March 31 - April 4, 2025.<br>
 
-## People 
-1. <a href="http://www.math.unipd.it/~gangwal/">Prof. Ankit Gangwal</a>,International Institute of Information Technology, Hyderabad, India<br/>
-2. <a href="http://github.com/psahithireddy">P Sahithi Reddy</a>, International Institute of Information Technology, Hyderabad, India<br/>
-3. <a href="http://github.com/95ych">C.Y.K Sagar</a>International Institute of Information Technology, Hyderabad, India
-## Sample Image
-<img src="./captcha_design.jpeg" alt="Alt text" width="300">
+### People 
+1. <a href="https://ciaoankit.github.io/">Ankit Gangwal</a>, International Institute of Information Technology, Hyderabad, India<br/>
+2. <a href="http://github.com/psahithireddy">P. Sahithi Reddy</a>, International Institute of Information Technology, Hyderabad, India<br/>
+3. <a href="http://github.com/95ych">C.Y.K. Sagar</a> International Institute of Information Technology, Hyderabad, India
 
 ## Usage Manual
+
 ### How to Start Server
-Clone the repository and run the following commands
+Clone the repository and run the following commands:
 ```
 pip install -r requirements.txt
 ./run.sh
 ```
 ### How to Start Client
-- Connect mobile to the same network as the server
-- Once the server starts running copy the url and paste it in the mobile browser.
+- Connect a mobile device to the same network as the server.
+- Once the server starts running, copy the corresponding URL and paste/open it in the mobile browser.
 
 ## Technical Details
 ### APIs
 
 | Method | Endpoint         | Description                                                  | Associated Function |
 |--------|------------------|--------------------------------------------------------------|------------------|
-| GET    | /home            | Display home page                                            | landing_page() |
-| GET/POST | /puzzle        | - Creates the coordinates for obstacles and images <br>- Display puzzle page | start() |
+| GET    | /home            | Displays home page                                            | landing_page() |
+| GET/POST | /puzzle        | - Creates the coordinates for obstacles and images <br>- Displays puzzle page | start() |
 | POST   | /coordinates     | - Works to get coordinates of the device<br>- Redirects to /puzzle | coordinates() |
 | POST   | /guess           | - Works to get the path of the user<br>- Verifies the path and answer<br>- Returns the result | guess() |
 
 
-### Files - Functions
+### Files - Description
 | File | Description                                                  |
 |----------|--------------------------------------------------------------|
-| main.py | - Contains all the routes and calls all the needed verifications for the captcha <br>  - has verification functions of jumps and ball passing through obstacle|
-| helper.py | - Contains all the helper functions for the captcha for distance, dumping data, getting_min_points needed for verfication|
-|coordinate_handler.py| - Contains all the functions for handling coordinates of the obstacle, box and the ball|
-|image_handler.py| - Contains all the functions for handling images like creatig, deleting, naming|
+| main.py | - Contains all the routes and calls all the needed verifications for SCCaptcha <br>  - Has verification functions to handle jumps and ball passing through obstacle|
+| helper.py | - Contains all the helper functions for distance, dumping data, getting_min_points needed for verfication|
+|coordinate_handler.py| - Contains all the functions for handling coordinates of the obstacle, box, and the ball|
+|image_handler.py| - Contains all the functions for handling images like creating, deleting, naming|
 |path_behaviour.py| - Contains all the functions for handling the path of the ball to differentiate between humans and robots using RMSE|
-|path_analysis.py | - Analyse the path such the parameters can be tuned &  paths can be compared, independent of the backend|
+|path_analysis.py | - Analyses the path to tune parameters, independent of the backend service to determine the human like behaviour|
 
-### Functions
+### Functions - Description
 
 `box or images refers to images of animals, obs refers to obstacles, few functions are not mentioned here as they are self explanatory`
 | Function | Description                                                  |
 |----------|--------------------------------------------------------------|
-| delete_img() | - Deletes database images which are older than few minutes|
-| render_img() | - Takes coordinates from start function and generates the complete image by laying animals on a transparent image |
-| check_endpoint() | - For each path guessed, checks if any of the endpoint is reached among 4 images|
+| delete_img() | - Deletes database images that are older than few minutes|
+| render_img() | - Takes coordinates from the start function and generates the complete image by laying entities on a transparent image |
+| check_endpoint() | - For each path guessed, checks if any of the endpoint is reached among the 4 images|
 | dist() | - Computes Euclidean Distance between two points  |
 | inbox() | - Checks if the ball is in the margin threshold of the image |
 | verify_path() | Verifies the path <br> - based on path length <br> - distance between points and endpoint reached  <br> - by calling inbox <br> - Number of valid datapoints|
-| get_area() | - Computes area around the image (box) which we want to set as valid area for ball to be in|
+| get_area() | - Computes area around the image (box), which we want to set as valid area for ball to be in|
 | get_box_coordinates() | - Computes the coordinates of the box/images for its placement on screen and returns values to start() function|
-| ball_obs_overlap() | - Checks if the ball and obstacle overlap by seeing if point is in rectangle|
-
+| ball_obs_overlap() | - Checks if the ball's coordinates overlaps with obstacles coordinates|
 
 
 
@@ -79,23 +78,12 @@ pip install -r requirements.txt
 
 
 ### WorkFlow
-1. When a user visits the site, in the backend server the user is allocated a unique id.
-2. For each user id, 4 obstacle locations, and 4 captcha box locations are generated randomly and stored in a dictionary for the given user id. 
-3. A random image is picked from a large collection of images. The selected image is rotated to an angle of multiple of 90 degrees. The no. times by which the image should be rotated 90 degrees anticlockwise is stored as the captcha answer for that user id. Similarly obstacles are placed along the given coordinates and the image is rendered.
+1. When a user visits the site, the user is allocated a unique ID in the backend server.
+2. For each user ID, 4 obstacle locations and 4 SCCaptcha box locations are generated randomly and stored in a dictionary for the given user ID. 
+3. A random image is picked from a (large) collection of images. The selected image is rotated to an angle of multiple of 90 degrees. The number of times the image should be rotated 90 degrees anticlockwise is stored as the SCCaptcha answer for that user ID. Similarly, obstacles are placed along the given coordinates, and the image is rendered.
+4. The front end displays the image, and the user is asked to tilt the device to guide the ball to the upright/correct image. The user is given 25 seconds to solve SCCaptcha.
+5. The frontend sends the ball's coordinates to the backend server at periodic intervals. The backend server checks if the end coordinates are within the valid area of the image. If yes, SCCaptcha is passed. If a user ends up in one of the wrong coordinates, SCCaptcha fails and restarts again.
+6. Moreover, if no output from the sensor is observed, the server initiates a fallback mechanism within a few seconds.
 
-4. The frontend displays the image and the user is asked to tilt the device to guide the ball to the upright image. The user is given 10 seconds to solve the captcha.
-
-5. The frontend sends the coordinates of the device to the backend server. The backend server checks if the coordinates are within the valid area of the image. If the coordinates are within the valid area, the coordinates are stored in a list. If the coordinates are not within the valid area, the coordinates are discarded.
-
-
-## Why ReCaptcha
-For captchas like select images in the grid below, there are certain problems. Nowadays we have plenty of computer vision models which can identify them and complete the captcha. 
-
-In ReCaptcha, the interface is user-friendly, you need to just know which image is in it's correct upright position, and tilt the device to guide the ball over it, which is playfully fun enough. 
-
-## How is it safer from attackers
-In the traditional captcha, its just enough for the ml models to recognise the image, once its recognised, the box is clicked and it's done. But here, in order, we need to build a model which detects whether the object is upright or not, once it's done it should get a path from the ball to the captcha box, paving it's way around the obstacles. These barriers make the automation of solving the captcha more difficult than the traditional ones. The upright detection model was chosen based on the study that there are certain class of images that are easy for humans to orient but harder for machines to orient (https://dl.acm.org/doi/10.1145/1526709.1526822). We will using images from this class for our tasks.
-
-## Cons
-Since we are using Generic sensor api, it will only work on chromium based browsers and non-ios devices which have gyroscope sensors.
-Unlike other captchas tasks which mostly involves clicking the image, here the user has to put in more effort to pass the captcha.
+### Screenshot
+<img src="./captcha_design.jpeg" alt="Alt text" width="300">
