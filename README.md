@@ -1,17 +1,33 @@
-# ReCap
+# Swiss Cheese CAPTCHA: A Novel Multi-barrier Mechanism for Bot Detection
+
+## Introduction
+Swiss Cheese CAPTCHA (SCCaptcha) is a multi barrier CAPTCHA mechanism. In SCCaptcha user moves the ball from the centre towards the upright image going around the obstacles. User can guide the ball by tilting their mobile device appropriately. On hovering over the right image, the captcha is passed, otherwise if hovered over other image, the captcha fails prompting the user to try again. If the user fails to solve the captcha in 10 seconds, the captcha resets itself to a new one.
+
+### Please don't forget to cite our paper. 
+Ankit Gangwal, P. Sahithi Reddy, and C.Y.K. Sagar. 2025. Swiss Cheese
+CAPTCHA: A Novel Multi-barrier Mechanism for Bot Detection. In Proceed-
+ings of ACM SAC Conference (SAC’25). ACM, New York, NY, USA. 
+
+## People 
+1. <a href="http://www.math.unipd.it/~gangwal/">Prof. Ankit Gangwal</a>,International Institute of Information Technology, Hyderabad, India<br/>
+2. <a href="http://github.com/psahithireddy">P Sahithi Reddy</a>, International Institute of Information Technology, Hyderabad, India<br/>
+3. <a href="http://github.com/95ych">C.Y.K Sagar</a>International Institute of Information Technology, Hyderabad, India
+## Sample Image
 <img src="./captcha_design.jpeg" alt="Alt text" width="300">
 
-## Description
-User moves the ball from the centre towards the upright image going around the obstacles. User can guide the ball by tilting their mobile device appropriately. On hovering over the right image, the captcha is passed, otherwise if hovered over other image, the captcha fails prompting the user to try again. If the user fails to solve the captcha in 10 seconds, the captcha resets itself to a new one.
-
-## How to Run
+## Usage Manual
+### How to Start Server
 Clone the repository and run the following commands
 ```
 pip install -r requirements.txt
-python main.py
+./run.sh
 ```
+### How to Start Client
+- Connect mobile to the same network as the server
+- Once the server starts running copy the url and paste it in the mobile browser.
 
-## APIs
+## Technical Details
+### APIs
 
 | Method | Endpoint         | Description                                                  | Associated Function |
 |--------|------------------|--------------------------------------------------------------|------------------|
@@ -21,7 +37,7 @@ python main.py
 | POST   | /guess           | - Works to get the path of the user<br>- Verifies the path and answer<br>- Returns the result | guess() |
 
 
-## Files - Functions
+### Files - Functions
 | File | Description                                                  |
 |----------|--------------------------------------------------------------|
 | main.py | - Contains all the routes and calls all the needed verifications for the captcha <br>  - has verification functions of jumps and ball passing through obstacle|
@@ -31,7 +47,7 @@ python main.py
 |path_behaviour.py| - Contains all the functions for handling the path of the ball to differentiate between humans and robots using RMSE|
 |path_analysis.py | - Analyse the path such the parameters can be tuned &  paths can be compared, independent of the backend|
 
-## Functions
+### Functions
 
 `box or images refers to images of animals, obs refers to obstacles, few functions are not mentioned here as they are self explanatory`
 | Function | Description                                                  |
@@ -49,7 +65,7 @@ python main.py
 
 
 
-## Supporting Browsers
+### Supporting Browsers
 
 | Browser |Version | Support |
 |------------|--------------|---------------------------------|
@@ -62,7 +78,7 @@ python main.py
 |Firefox for Android| 119 | ❌|
 
 
-## WorkFlow
+### WorkFlow
 1. When a user visits the site, in the backend server the user is allocated a unique id.
 2. For each user id, 4 obstacle locations, and 4 captcha box locations are generated randomly and stored in a dictionary for the given user id. 
 3. A random image is picked from a large collection of images. The selected image is rotated to an angle of multiple of 90 degrees. The no. times by which the image should be rotated 90 degrees anticlockwise is stored as the captcha answer for that user id. Similarly obstacles are placed along the given coordinates and the image is rendered.
