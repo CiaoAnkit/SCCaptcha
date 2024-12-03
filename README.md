@@ -46,6 +46,7 @@ pip install -r requirements.txt
 |image_handler.py| - Contains all the functions for handling images like creating, deleting, naming|
 |path_behaviour.py| - Contains all the functions for handling the path of the ball to differentiate between humans and robots using RMSE|
 |path_analysis.py | - Analyses the path to tune parameters, independent of the backend service to determine the human like behaviour|
+| /analysis | - Analyses the path data based on evaluations mentioned in the paper, the files contain code for various data driven analysis|
 
 ### Functions - Description
 
@@ -69,11 +70,11 @@ pip install -r requirements.txt
 | Browser |Version | Support |
 |------------|--------------|---------------------------------|
 |Chrome for Android |120|&#x2705;|
-|Safari on iOS* | 3.2 - 17.3: | ❌|
-|Samsung Internet | 9.2 - 23: | &#x2705;
-|Opera Mobile* | 73: | &#x2705;
-|UC Browser for Android | 15.5: | &#xFFFD;|
-|Android Browser* | 120: | &#x2705;
+|Safari on iOS* | 3.2 - 17.3 | ❌|
+|Samsung Internet | 9.2 - 23 | &#x2705;
+|Opera Mobile* | 73 | &#x2705;
+|UC Browser for Android | 15.5 | &#xFFFD;|
+|Android Browser* | 120 | &#x2705;
 |Firefox for Android| 119 | ❌|
 
 
