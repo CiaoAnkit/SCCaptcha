@@ -45,8 +45,7 @@ pip install -r requirements.txt
 |coordinate_handler.py| - Contains all the functions for handling coordinates of the obstacle, box, and the ball|
 |image_handler.py| - Contains all the functions for handling images like creating, deleting, naming|
 |path_behaviour.py| - Contains all the functions for handling the path of the ball to differentiate between humans and robots using RMSE|
-|path_analysis.py | - Analyses the path to tune parameters, independent of the backend service to determine the human like behaviour|
-| /analysis | - Analyses the path data based on evaluations mentioned in the paper, the files contain code for various data driven analysis|
+| /data/path_dump.json| - Location where the trajectories are appended for every new solve|
 
 ### Functions - Description
 
