@@ -46,6 +46,7 @@ pip install -r requirements.txt
 |image_handler.py| - Contains all the functions for handling images like creating, deleting, naming|
 |path_behaviour.py| - Contains all the functions for handling the path of the ball to differentiate between humans and robots using RMSE|
 | /data/path_dump.json| - Location where the trajectories are appended for every new solve|
+| /static/pics/temp | - where the current image thats rendered is stored, images > 2minutes old get deleted in the next run/solve | 
 
 ### Functions - Description
 
