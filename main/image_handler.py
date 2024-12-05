@@ -4,7 +4,7 @@ from PIL import Image, ImageFilter, ImageFont, ImageDraw
 from itertools import product
 from random import choice, randint
 from colorama import Fore
-folder = 'recaptcha_main/static/pics/temp'
+folder = 'main/static/pics/temp'
 
 def delete_img():
     '''
@@ -46,7 +46,7 @@ def render_img(img_id, box_pos, ans, user_id, gcwidth, gcheight, img_first, img_
 
         if ans == i:
             angle_animal = 1
-            img1 = Image.open(f"./recaptcha_main/static/pics/images/{img_id}.png").convert('RGBA')
+            img1 = Image.open(f"./main/static/pics/images/{img_id}.png").convert('RGBA')
             img1 = img1.resize(newsize)
             image1copy = img1.copy()
             rot = image1copy.rotate(1)
@@ -57,7 +57,7 @@ def render_img(img_id, box_pos, ans, user_id, gcwidth, gcheight, img_first, img_
             # out.save(f"./static/pics/test/{name}.png")
 
         else:
-            img1 = Image.open(f"./recaptcha_main/static/pics/images/{img_num}.png").convert('RGBA')
+            img1 = Image.open(f"./main/static/pics/images/{img_num}.png").convert('RGBA')
             img1 = img1.resize(newsize)
             image1copy = img1.copy()
             angle_animal = choice([i for i in [30,87,136] if i not in angles])
