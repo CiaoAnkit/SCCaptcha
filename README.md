@@ -57,7 +57,7 @@ pip install -r requirements.txt
 | check_endpoint() | - For each path guessed, checks if any of the endpoint is reached among the 4 images|
 | dist() | - Computes Euclidean Distance between two points  |
 | inbox() | - Checks if the ball is in the margin threshold of the image |
-| verify_path() | Verifies the path <br> - based on path length <br> - distance between points and endpoint reached  <br> - by calling inbox <br> - Number of valid datapoints|
+| verify_path() | Verifies the path <br> - based on minimum acceptable number of points in the trajectory <br>- based on if there are huge jumps in the adjacent points in the trajectory <br> - distance between points and endpoint reached  <br> - if ball passed through obstacles (which is possible when trajectory is manually generated)  <br> - Human-like behaviour|
 | get_area() | - Computes area around the image (box), which we want to set as valid area for ball to be in|
 | get_box_coordinates() | - Computes the coordinates of the box/images for its placement on screen and returns values to start() function|
 | ball_obs_overlap() | - Checks if the ball's coordinates overlaps with obstacles coordinates|
