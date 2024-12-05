@@ -11,7 +11,6 @@ def delete_img():
     deletes all the files dates more than 2 minutes ago every time process starts
     '''
     now = time.time()
-
     files = [os.path.join(folder, filename) for filename in os.listdir(folder)]
     for filename in files:
         if (now - os.stat(filename).st_mtime) > 120:  # 2minutes

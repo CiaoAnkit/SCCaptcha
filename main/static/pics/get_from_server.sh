@@ -1,1 +1,0 @@
-scp sahithi@10.4.25.205:/tmp/pred_13.jpg sahithi@10.4.25.205:/tmp/pred_14.jpg sahithi@10.4.25.205:/tmp/pred_15.jpg sahithi@10.4.25.205:/tmp/pred_16.jpg ./test/
