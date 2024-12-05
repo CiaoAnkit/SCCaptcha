@@ -35,7 +35,7 @@ app.secret_key = '9fa39a52b44aaa7c7441435082af29d7c379ced38e72ae3535265bfda870fb
 # app.wsgi_app = ProxyFix(
 #     app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_prefix=1
 # )
-file_path = "./recaptcha_main/data/path_dump.json"
+file_path = "./main/data/path_dump.json"
 # dump_flag = True if input("Do you want to dump the paths? (y/n): ") == 'y' else False
 dump_flag = True # for now
 
@@ -46,7 +46,7 @@ def generate_captcha_string(user_id):
     captcha_string = ''.join(random.choice(characters) for _ in range(6))
     image = ImageCaptcha()
     data = image.generate(captcha_string)
-    image.write(captcha_string, f'./recaptcha_main/static/pics/temp/{user_id}.png')
+    image.write(captcha_string, f'./main/static/pics/temp/{user_id}.png')
     return captcha_string
 
 
@@ -56,7 +56,7 @@ def generate_audio_captcha(user_id):
     captcha_text = ''.join(random.choice(characters) for _ in range(6))
     audio_data = audio.generate(captcha_text)
     audio_file = f"{user_id}.wav"
-    audio.write(captcha_text, f'./recaptcha_main/static/pics/temp/{audio_file}')  
+    audio.write(captcha_text, f'./main/static/pics/temp/{audio_file}')  
     return captcha_text
 
 def point_inside_rectangle(point, rectangle):
