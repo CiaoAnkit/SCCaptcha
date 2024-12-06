@@ -45,8 +45,8 @@ pip install -r requirements.txt
 |coordinate_handler.py| - Contains all the functions for handling coordinates of the obstacle, box, and the ball|
 |image_handler.py| - Contains all the functions for handling images like creating, deleting, naming|
 |path_behaviour.py| - Contains all the functions for handling the path of the ball to differentiate between humans and robots using RMSE|
-| /data/path_dump.json| - Location where the trajectories are appended for every new solve|
-| /static/pics/temp | - where the current image thats rendered is stored, images > 2minutes old get deleted in the next run/solve | 
+| /data/path_dump.json| - Location where trajectories are appended for every new solve|
+| /static/pics/temp | - Currently rendered image is stored here, images > 2minutes old get deleted in the next run/solve | 
 
 ### Functions - Description
 
@@ -58,7 +58,7 @@ pip install -r requirements.txt
 | check_endpoint() | - For each path guessed, checks if any of the endpoint is reached among the 4 images|
 | dist() | - Computes Euclidean Distance between two points  |
 | inbox() | - Checks if the ball is in the margin threshold of the image |
-| verify_path() | Verifies the path <br> - based on minimum acceptable number of points in the trajectory <br>- based on if there are huge jumps in the adjacent points in the trajectory <br> - distance between points and endpoint reached  <br> - if ball passed through obstacles (which is possible when trajectory is manually generated)  <br> - Human-like behaviour|
+| verify_path() | Verifies the path based on<br> - minimum acceptable number of points in the trajectory <br> - if there are huge jumps in the adjacent points in the trajectory <br> - distance between points and endpoint reached  <br> - if ball passed through obstacles (which is possible when a trajectory is manually generated)  <br> - human-like behaviour|
 | get_area() | - Computes area around the image (box), which we want to set as valid area for ball to be in|
 | get_box_coordinates() | - Computes the coordinates of the box/images for its placement on screen and returns values to start() function|
 | ball_obs_overlap() | - Checks if the ball's coordinates overlaps with obstacles coordinates|
